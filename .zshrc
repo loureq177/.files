@@ -62,7 +62,7 @@ setopt hist_find_no_dups
 alias cd="z"
 alias vim="nvim"
 alias ls="eza --icons -l"
-alias cat="bat"
+alias cat="bat -pp"
 alias l="eza -lah --icons" 
 
 # --- [ Functions ] ---
