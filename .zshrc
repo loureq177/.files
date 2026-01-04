@@ -65,6 +65,12 @@ alias ls="eza --icons -l"
 alias cat="bat -pp"
 alias l="eza -lah --icons" 
 
+alias zen="flatpak run app.zen_browser.zen"
+alias pinta="flatpak run com.github.PintaProject.Pinta"
+alias obsidian="flatpak run md.obsidian.Obsidian"
+alias pika="flatpak run org.gnome.World.PikaBackup"
+alias spotify="flatpak run com.spotify.Client"
+
 # --- [ Functions ] ---
 zshaddhistory() {
     local line="${1%%$'\n'}"
