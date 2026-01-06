@@ -1,6 +1,7 @@
 # --- [ Environment & Path ] ---
 export PATH="$HOME/.cargo/bin:$PATH"
 export EDITOR='nvim'
+export VISUAL='nvim'
 [ -n "$SSH_CONNECTION" ] && export EDITOR='vim'
 
 # --- [ Zinit Setup ] ---
