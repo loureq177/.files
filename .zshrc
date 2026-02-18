@@ -13,7 +13,6 @@ fi
 source "${ZINIT_HOME}/zinit.zsh"
 
 # --- [ Shell Integrations (Binary Tools) ] ---
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 
@@ -65,12 +64,13 @@ alias vim="nvim"
 alias ls="eza --icons -l"
 alias cat="bat -pp"
 alias l="eza -lah --icons" 
+alias grep="rg"
 
-alias zen="flatpak run app.zen_browser.zen"
-alias pinta="flatpak run com.github.PintaProject.Pinta"
-alias obsidian="flatpak run md.obsidian.Obsidian"
-alias pika="flatpak run org.gnome.World.PikaBackup"
-alias spotify="flatpak run com.spotify.Client"
+# alias zen="flatpak run app.zen_browser.zen"
+# alias pinta="flatpak run com.github.PintaProject.Pinta"
+# alias obsidian="flatpak run md.obsidian.Obsidian"
+# alias pika="flatpak run org.gnome.World.PikaBackup"
+# alias spotify="flatpak run com.spotify.Client"
 
 # --- [ Functions ] ---
 zshaddhistory() {
@@ -80,3 +80,13 @@ zshaddhistory() {
         *) return 0 ;;
     esac
 }
+
+# bun completions
+[ -s "/home/mlorenc/.bun/_bun" ] && source "/home/mlorenc/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+. "$HOME/.local/bin/env"
+. "/home/mlorenc/.deno/env"
