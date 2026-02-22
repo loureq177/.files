@@ -76,6 +76,7 @@ zshaddhistory() {
 }
 
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANROFFOPT="-c"
 
 # bun completions
 [ -s "/home/mlorenc/.bun/_bun" ] && source "/home/mlorenc/.bun/_bun"
@@ -84,5 +85,4 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-. "$HOME/.local/bin/env"
-. "/home/mlorenc/.deno/env"
+source "$HOME/.local/bin/env"
