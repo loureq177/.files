@@ -75,7 +75,7 @@ zshaddhistory() {
     esac
 }
 
-mann() {man $1 | bat -l man --style=numbers}
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # bun completions
 [ -s "/home/mlorenc/.bun/_bun" ] && source "/home/mlorenc/.bun/_bun"
