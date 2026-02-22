@@ -1,0 +1,16 @@
+custom-shader = ~/.config/ghostty/shaders/cursor_warp.glsl
+custom-shader-animation = always
+
+#theme = Adwaita Dark
+theme = TokyoNight
+font-family = JetBrains Mono Nerd Font Mono
+font-size = 16
+cursor-style = block
+cursor-style-blink = false
+
+confirm-close-surface = true
+clipboard-read = allow
+clipboard-write = allow
+font-feature = -calt
+gtk-titlebar = false
+maximize = true
