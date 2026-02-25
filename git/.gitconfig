@@ -1,5 +1,16 @@
+[core]
+    editor = nvim
+    pager = delta
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true
+    line-numbers = true
+[help]
+    autocorrect = 10
 [init]
 	defaultBranch = main
 [user]
 	name = loureq177
 	email = 142215274+loureq177@users.noreply.github.com
+

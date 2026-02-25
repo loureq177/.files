@@ -60,11 +60,17 @@ setopt hist_find_no_dups
 
 # --- [ Aliases ] ---
 alias cd="z"
-alias vim="nvim"
-alias ls="eza --icons -l"
+alias ls="eza --icons -l --git"
 alias cat="bat -pp"
 alias l="eza -lah --icons" 
 alias grep="rg"
+
+# Dirs
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
 
 # --- [ Functions ] ---
 zshaddhistory() {
@@ -84,3 +90,7 @@ export MANROFFOPT="-c"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+export PATH="/home/mlorenc/.config/herd-lite/bin:$PATH"
+
+# Laravel
+export PHP_INI_SCAN_DIR="/home/mlorenc/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
