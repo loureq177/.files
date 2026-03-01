@@ -94,3 +94,8 @@ export PATH="/home/mlorenc/.config/herd-lite/bin:$PATH"
 
 # Laravel
 export PHP_INI_SCAN_DIR="/home/mlorenc/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/mlorenc/.lmstudio/bin"
+# End of LM Studio CLI section
+

@@ -6,8 +6,6 @@
 [delta]
     navigate = true
     line-numbers = true
-[help]
-    autocorrect = 10
 [init]
 	defaultBranch = main
 [user]
