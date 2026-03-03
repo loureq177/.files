@@ -3,7 +3,7 @@ custom-shader-animation = always
 
 theme = TokyoNight Moon
 font-family = JetBrains Mono Nerd Font Mono
-font-size = 16
+font-size = 15
 cursor-style = block
 cursor-style-blink = false
 adjust-cell-height = 5%
