@@ -12,3 +12,5 @@
 	name = loureq177
 	email = 142215274+loureq177@users.noreply.github.com
 
+[pull]
+	rebase = false

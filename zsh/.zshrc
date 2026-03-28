@@ -60,9 +60,9 @@ setopt hist_find_no_dups
 
 # --- [ Aliases ] ---
 alias cd="z"
-alias ls="eza --icons -l --git"
+alias ls="eza -l --icons --no-user"
+alias l="eza -laB --icons" 
 alias cat="bat -pp"
-alias l="eza -lah --icons" 
 alias grep="rg"
 
 # Dirs
@@ -99,3 +99,10 @@ export PHP_INI_SCAN_DIR="/home/mlorenc/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
 export PATH="$PATH:/home/mlorenc/.lmstudio/bin"
 # End of LM Studio CLI section
 
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/mlorenc/Downloads/google-cloud-cli-linux-x86_64/google-cloud-sdk/path.zsh.inc' ]; then . '/home/mlorenc/Downloads/google-cloud-cli-linux-x86_64/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/mlorenc/Downloads/google-cloud-cli-linux-x86_64/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/mlorenc/Downloads/google-cloud-cli-linux-x86_64/google-cloud-sdk/completion.zsh.inc'; fi
+export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE=~/.config/gws/client_secret.json
