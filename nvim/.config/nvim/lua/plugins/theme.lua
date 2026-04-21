@@ -1,30 +1,19 @@
 return {
-	-- 1. Konfiguracja wtyczki Catppuccin
 	{
-		"catppuccin/nvim",
-		name = "catppuccin",
+		"folke/tokyonight.nvim",
+		name = "tokyonight",
+		lazy = false,
+		priority = 1000,
 		opts = {
-			flavour = "mocha",
-			transparent_background = true,
-			integrations = {
-				treesitter = true,
-				native_lsp = {
-					enabled = true,
-				},
-				telescope = {
-					enabled = true,
-				},
-				neotree = true,
-				lualine = true,
-			},
+			style = "moon",
+			-- transparent = true,
 		},
 	},
 
-	-- 2. Ustawienie Catppuccin jako domyślnego motywu w LazyVim
 	{
 		"LazyVim/LazyVim",
 		opts = {
-			colorscheme = "catppuccin",
+			colorscheme = "tokyonight",
 		},
 	},
 }
