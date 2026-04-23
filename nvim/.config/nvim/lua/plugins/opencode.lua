@@ -26,7 +26,9 @@ return {
 			},
 		},
 	},
-	config = function()
+	config = function(_, opts)
+		require("opencode").setup(opts)
+
 		---@type opencode.Opts
 
 		vim.o.autoread = true

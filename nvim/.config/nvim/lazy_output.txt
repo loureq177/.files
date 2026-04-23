@@ -1,0 +1,1 @@
+lazy.nvim: /home/mlorenc/.local/share/nvim/lazy/lazy.nvim
