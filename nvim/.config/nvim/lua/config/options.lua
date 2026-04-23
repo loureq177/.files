@@ -8,3 +8,6 @@ vim.opt.scrolloff = 8
 
 vim.opt.mousescroll = "ver:1,hor:1"
 vim.opt.cmdheight = 0
+
+-- Use system clipboard for yank/paste (requires wl-clipboard on Wayland)
+vim.opt.clipboard = "unnamedplus"

@@ -2,7 +2,7 @@ custom-shader = ~/.config/ghostty/shaders/cursor_warp.glsl
 custom-shader-animation = always
 theme = "TokyoNight Moon"
 font-family = JetBrainsMono Nerd Font Mono
-font-size = 14
+font-size = 13
 cursor-style = block
 cursor-style-blink = false
 adjust-cell-height = 5%
@@ -13,4 +13,8 @@ clipboard-write = allow
 font-feature = -calt
 gtk-titlebar = false
 maximize = true
-scroll-to-bottom = keystroke, no-output
+
+keybind = alt+h=goto_split:left
+keybind = alt+j=goto_split:down
+keybind = alt+k=goto_split:up
+keybind = alt+l=goto_split:right

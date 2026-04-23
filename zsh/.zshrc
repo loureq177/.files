@@ -40,7 +40,10 @@ fi
 
 # --- [ Shell Integrations & Prompts ] ---
 eval "$(starship init zsh)"
-eval "$(zoxide init zsh)"
+eval "$(zoxide init zsh --cmd cd)"
+
+# Prefer standard cd completion (so fzf-tab can enhance it)
+(( ${+functions[compdef]} )) && compdef _cd cd
 eval "$(fzf --zsh)"
 
 # --- [ Configuration & Keybindings ] ---
@@ -60,7 +63,7 @@ setopt hist_save_no_dups
 setopt hist_find_no_dups
 
 # --- [ Aliases ] ---
-alias cd="z"
+# alias cd="z"  # (wyłączone) cd jest obsługiwane przez zoxide --cmd cd
 alias ls="eza -l --icons --no-user"
 alias l="eza -laB --icons" 
 alias cat="bat -pp"
@@ -85,9 +88,23 @@ zshaddhistory() {
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'command ls --color=auto -- "$realpath"'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'command ls --color=auto -- "$realpath"'
 
 zinit light Aloxaf/fzf-tab
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
+
+# Tab dispatch: keep fzf-tab as default, but allow forge-completion when it applies
+function __tab_complete_dispatch() {
+    local current_word="${LBUFFER##* }"
+    if (( ${+functions[forge-completion]} )) && { [[ "$current_word" == @* ]] || [[ "${LBUFFER}" =~ "^:([a-zA-Z][a-zA-Z0-9_-]*)?$" ]]; }; then
+        zle forge-completion
+    elif (( ${+functions[fzf-tab-complete]} )); then
+        zle fzf-tab-complete
+    else
+        zle expand-or-complete
+    fi
+}
+zle -N __tab_complete_dispatch
+bindkey '^I' __tab_complete_dispatch

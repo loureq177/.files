@@ -28,17 +28,13 @@ return {
 	},
 	config = function()
 		---@type opencode.Opts
-		vim.g.opencode_opts = {
-			-- Your configuration, if any; goto definition on the type or field for details
-		}
 
-		vim.o.autoread = true -- Required for `opts.events.reload`
+		vim.o.autoread = true
 
-		-- Recommended/example keymaps
-		vim.keymap.set({ "n", "x" }, "<C-a>", function()
+		vim.keymap.set({ "n", "x" }, "<C-oa>", function()
 			require("opencode").ask("@this: ", { submit = true })
 		end, { desc = "Ask opencode…" })
-		vim.keymap.set({ "n", "x" }, "<C-x>", function()
+		vim.keymap.set({ "n", "x" }, "<C-ox>", function()
 			require("opencode").select()
 		end, { desc = "Execute opencode action…" })
 		vim.keymap.set({ "n", "t" }, "<C-.>", function()
@@ -58,9 +54,5 @@ return {
 		vim.keymap.set("n", "<S-C-d>", function()
 			require("opencode").command("session.half.page.down")
 		end, { desc = "Scroll opencode down" })
-
-		-- You may want these if you use the opinionated `<C-a>` and `<C-x>` keymaps above — otherwise consider `<leader>o…` (and remove terminal mode from the `toggle` keymap)
-		vim.keymap.set("n", "+", "<C-a>", { desc = "Increment under cursor", noremap = true })
-		vim.keymap.set("n", "-", "<C-x>", { desc = "Decrement under cursor", noremap = true })
 	end,
 }
