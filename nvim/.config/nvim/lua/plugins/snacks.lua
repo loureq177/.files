@@ -1,9 +1,14 @@
 return {
 	"folke/snacks.nvim",
 	opts = {
-		explorer = {
-			replace_netrw = true,
+		terminal = {
+			win = {
+				wo = {
+					winbar = "",
+				},
+			},
 		},
+		explorer = { replace_netrw = true },
 		picker = {
 			icons = {
 				tree = {
