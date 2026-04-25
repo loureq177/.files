@@ -21,7 +21,7 @@ return {
 		local snacks_terminal_opts = {
 			win = {
 				position = "right",
-				width = 0.40,
+				width = 0.37,
 				enter = false,
 				on_win = function(win)
 					require("opencode.terminal").setup(win.win)

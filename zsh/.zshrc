@@ -1,19 +1,47 @@
 # --- [ Environment & Path ] ---
 # (Wszystkie ścieżki muszą być ustawione jako pierwsze, by reszta skryptów je widziała)
-export PATH="$HOME/.cargo/bin:$PATH"
+# Keep PATH clean (dedupe while preserving first-occurrence order).
+typeset -U path
+
 export EDITOR='nvim'
 export VISUAL='nvim'
-[ -n "$SSH_CONNECTION" ] && export EDITOR='vim'
+[[ -n "$SSH_CONNECTION" ]] && export EDITOR='vim'
 
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-export PATH="/home/mlorenc/.config/herd-lite/bin:$PATH"
-export PHP_INI_SCAN_DIR="/home/mlorenc/.config/herd-lite/bin:$PHP_INI_SCAN_DIR"
-export PATH="$PATH:/home/mlorenc/.lmstudio/bin"
+# Prefer user-level bins early.
+path=(
+  "$HOME/.local/bin"
+  "$HOME/.cargo/bin"
+  $path
+)
 
-if [ -f '/home/mlorenc/Downloads/google-cloud-cli-linux-x86_64/google-cloud-sdk/path.zsh.inc' ]; then . '/home/mlorenc/Downloads/google-cloud-cli-linux-x86_64/google-cloud-sdk/path.zsh.inc'; fi
-if [ -f '/home/mlorenc/Downloads/google-cloud-cli-linux-x86_64/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/mlorenc/Downloads/google-cloud-cli-linux-x86_64/google-cloud-sdk/completion.zsh.inc'; fi
-export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE=~/.config/gws/client_secret.json
+# Herd Lite (PHP + composer)
+if [[ -d "$HOME/.config/herd-lite/bin" ]]; then
+  path=("$HOME/.config/herd-lite/bin" $path)
+  # Ensure herd-lite's ini scan dir is present exactly once.
+  if [[ ":${PHP_INI_SCAN_DIR:-}:" != *":$HOME/.config/herd-lite/bin:"* ]]; then
+    export PHP_INI_SCAN_DIR="$HOME/.config/herd-lite/bin${PHP_INI_SCAN_DIR:+:$PHP_INI_SCAN_DIR}"
+  fi
+fi
+
+# Bun: only wire local install when it exists (system bun lives in /usr/bin).
+if [[ -d "$HOME/.bun/bin" ]]; then
+  export BUN_INSTALL="$HOME/.bun"
+  path=("$BUN_INSTALL/bin" $path)
+fi
+
+# LM Studio
+[[ -d "$HOME/.lmstudio/bin" ]] && path+=("$HOME/.lmstudio/bin")
+
+# Drop non-existent PATH entries (they often leak in from the desktop session).
+typeset -a _path_clean
+_path_clean=()
+for _p in $path; do
+  [[ -d "$_p" ]] && _path_clean+=("$_p")
+done
+path=("${_path_clean[@]}")
+unset _path_clean _p
+
+export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
 
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
@@ -26,9 +54,12 @@ if [ ! -d "$ZINIT_HOME" ]; then
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
+# If a plugin manager is also managing $plugins, avoid accidental double-loading.
+unset plugins
+
 # --- [ Completions (MUST be before compinit) ] ---
 zinit light zsh-users/zsh-completions
-[ -s "/home/mlorenc/.bun/_bun" ] && source "/home/mlorenc/.bun/_bun"
+[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
 # --- [ Autoload & Compinit ] ---
 autoload -Uz compinit
@@ -63,7 +94,6 @@ setopt hist_save_no_dups
 setopt hist_find_no_dups
 
 # --- [ Aliases ] ---
-# alias cd="z"  # (wyłączone) cd jest obsługiwane przez zoxide --cmd cd
 alias ls="eza -l --icons --no-user"
 alias l="eza -laB --icons" 
 alias cat="bat -pp"
@@ -94,6 +124,21 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'command ls --color=auto -- 
 zinit light Aloxaf/fzf-tab
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
+
+# >>> forge initialize >>>
+# !! Contents within this block are managed by 'forge zsh setup' !!
+# !! Do not edit manually - changes will be overwritten !!
+
+# Load forge shell plugin (commands, completions, keybindings) if not already loaded
+if [[ -z "$_FORGE_PLUGIN_LOADED" ]]; then
+    eval "$(forge zsh plugin)"
+fi
+
+# Load forge shell theme (prompt with AI context) if not already loaded
+if [[ -z "$_FORGE_THEME_LOADED" ]]; then
+    eval "$(forge zsh theme)"
+fi
+# <<< forge initialize <<<
 
 # Tab dispatch: keep fzf-tab as default, but allow forge-completion when it applies
 function __tab_complete_dispatch() {
