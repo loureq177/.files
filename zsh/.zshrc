@@ -94,8 +94,8 @@ setopt hist_save_no_dups
 setopt hist_find_no_dups
 
 # --- [ Aliases ] ---
-alias ls="eza -l --icons --no-user"
-alias l="eza -laB --icons" 
+alias ls="eza -l --icons --group-directories-first --no-user"
+alias l="eza -laB --icons --group-directories-first" 
 alias cat="bat -pp"
 alias grep="rg"
 

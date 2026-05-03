@@ -5,3 +5,7 @@ vim.opt.tabstop = 4
 vim.opt.scrolloff = 8
 vim.opt.mousescroll = "ver:1,hor:1"
 vim.opt.cmdheight = 0
+
+-- greatest remap ever
+vim.keymap.set("x", "<leader>p", [["_dP]])
+vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
