@@ -27,3 +27,11 @@ keybind = alt+shift+l=resize_split:right,10
 
 keybind = alt+d=scroll_page_lines:2
 keybind = alt+u=scroll_page_lines:-2
+
+working-directory = home
+window-inherit-working-directory = false
+tab-inherit-working-directory = false
+split-inherit-working-directory = true
+
+app-notifications = no-clipboard-copy
+window-inherit-font-size = true
