@@ -4,8 +4,15 @@
 [interactive]
     diffFilter = delta --color-only
 [delta]
-    navigate = true
+    syntax-theme = tokyonight_moon
+    features = decorations
     line-numbers = true
+    side-by-side = true
+    navigate = true
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
 [init]
 	defaultBranch = main
 [user]
@@ -14,3 +21,5 @@
 
 [pull]
 	rebase = false
+[push]
+	autoSetupRemote = true

@@ -1,85 +1,35 @@
-export PATH="/home/mlorenc/.local/bin:$PATH"
-
 typeset -U path
-
-export EDITOR='nvim'
-export VISUAL='nvim'
-[[ -n "$SSH_CONNECTION" ]] && export EDITOR='vim'
-
 path=(
   "$HOME/.local/bin"
   "$HOME/.cargo/bin"
   $path
 )
 
-if [[ -d "$HOME/.config/herd-lite/bin" ]]; then
-  path=("$HOME/.config/herd-lite/bin" $path)
-  if [[ ":${PHP_INI_SCAN_DIR:-}:" != *":$HOME/.config/herd-lite/bin:"* ]]; then
-    export PHP_INI_SCAN_DIR="$HOME/.config/herd-lite/bin${PHP_INI_SCAN_DIR:+:$PHP_INI_SCAN_DIR}"
-  fi
-fi
-
-if [[ -d "$HOME/.bun/bin" ]]; then
-  export BUN_INSTALL="$HOME/.bun"
-  path=("$BUN_INSTALL/bin" $path)
-fi
-
+[[ -d "$HOME/.config/herd-lite/bin" ]] && path=("$HOME/.config/herd-lite/bin" $path)
+[[ -d "$HOME/.bun/bin" ]] && path=("$HOME/.bun/bin" $path)
 [[ -d "$HOME/.lmstudio/bin" ]] && path+=("$HOME/.lmstudio/bin")
 
-typeset -a _path_clean
-_path_clean=()
-for _p in $path; do
-  [[ -d "$_p" ]] && _path_clean+=("$_p")
-done
-path=("${_path_clean[@]}")
-unset _path_clean _p
+export EDITOR='nvim'
+export VISUAL='nvim'
+[[ -n "$SSH_CONNECTION" ]] && export EDITOR='vim'
+
+if [[ -d "$HOME/.config/herd-lite/bin" && ":${PHP_INI_SCAN_DIR:-}:" != *":$HOME/.config/herd-lite/bin:"* ]]; then
+  export PHP_INI_SCAN_DIR="$HOME/.config/herd-lite/bin${PHP_INI_SCAN_DIR:+:$PHP_INI_SCAN_DIR}"
+fi
+
+[[ -d "$HOME/.bun/bin" ]] && export BUN_INSTALL="$HOME/.bun"
 
 export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
 export GOPATH="$HOME/.go"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
-export PATH="$HOME/.local/bin:$PATH"
+export BAT_THEME="tokyonight_moon"
 
 export FZF_DEFAULT_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git --type d'
-
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-if [ ! -d "$ZINIT_HOME" ]; then
-  mkdir -p "$(dirname $ZINIT_HOME)"
-  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
-source "${ZINIT_HOME}/zinit.zsh"
-
-unset plugins
-
-zinit light zsh-users/zsh-completions
-[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
-
-autoload -Uz compinit
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-  compinit
-else
-  compinit -C
-fi
-
-mkdir -p ~/.cache
-if command -v starship >/dev/null 2>&1; then
-    [[ ! -f ~/.cache/starship_init.zsh ]] && starship init zsh > ~/.cache/starship_init.zsh
-    source ~/.cache/starship_init.zsh
-fi
-
-[[ ! -f ~/.cache/zoxide_init.zsh ]] && zoxide init zsh --cmd cd > ~/.cache/zoxide_init.zsh
-source ~/.cache/zoxide_init.zsh
-
-(( ${+functions[compdef]} )) && compdef _cd cd
-eval "$(dircolors -b)"
-eval "$(fzf --zsh)"
-eval "$(thefuck --alias)"
-
-bindkey -e
-bindkey '^p' history-search-backward
-bindkey '^n' history-search-forward
+export FZF_CTRL_T_OPTS='--preview "bat --color=always --style=numbers --line-range=:500 {}"'
+export FZF_ALT_C_OPTS='--preview "eza -T -L 3 --icons --color=always {}"'
 
 HISTSIZE=10000
 HISTFILE=~/.zsh_history
@@ -92,16 +42,6 @@ setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_find_no_dups
 
-alias ls="eza -l --icons --group-directories-first --no-user --no-permissions --color=always --git"
-alias l="eza -laB --icons --group-directories-first" 
-alias cat="bat -pp"
-alias grep="rg"
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ......="cd ../../../../.."
-
 zshaddhistory() {
     local line="${1%%$'\n'}"
     case "$line" in
@@ -110,6 +50,32 @@ zshaddhistory() {
     esac
 }
 
+alias ls="eza -l --icons --group-directories-first --no-user --no-time --no-permissions --no-filesize --color=always --git"
+alias l="eza -laB --icons --group-directories-first"
+alias cat="bat -pp"
+alias grep="rg"
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ......="cd ../../../../.."
+
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [[ ! -d "$ZINIT_HOME" ]]; then
+  mkdir -p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+source "${ZINIT_HOME}/zinit.zsh"
+
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
+
+[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
+
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
@@ -117,7 +83,25 @@ zstyle ':completion:*:*:*:*:processes' command 'ps -ef'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'command ls --color=auto -- "$realpath"'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'command ls --color=auto -- "$realpath"'
 
+zinit light zsh-users/zsh-completions
 zinit light Aloxaf/fzf-tab
+
+zinit ice wait lucid
+zinit light zsh-users/zsh-autosuggestions
+zinit ice wait lucid
+zinit light zdharma-continuum/fast-syntax-highlighting
+
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
+command -v dircolors >/dev/null 2>&1 && eval "$(dircolors -b)"
+command -v fzf >/dev/null 2>&1 && source <(fzf --zsh)
+command -v thefuck >/dev/null 2>&1 && eval "$(thefuck --alias)"
+
+(( ${+functions[compdef]} )) && compdef _cd cd
+
+bindkey -e
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
 
 function __tab_complete_dispatch() {
     if (( ${+functions[fzf-tab-complete]} )); then
@@ -126,10 +110,5 @@ function __tab_complete_dispatch() {
         zle expand-or-complete
     fi
 }
-
 zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
-
-zinit ice wait lucid
-zinit light zsh-users/zsh-autosuggestions
-zinit light zdharma-continuum/fast-syntax-highlighting
