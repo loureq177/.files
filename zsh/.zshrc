@@ -37,10 +37,15 @@ SAVEHIST=$HISTSIZE
 HISTDUP=erase
 setopt appendhistory
 setopt sharehistory
+setopt extended_history
 setopt hist_ignore_space
 setopt hist_ignore_all_dups
 setopt hist_save_no_dups
 setopt hist_find_no_dups
+
+setopt auto_cd
+setopt auto_push_d
+setopt push_d_ignore_dups
 
 zshaddhistory() {
     local line="${1%%$'\n'}"
