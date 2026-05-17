@@ -1,3 +1,5 @@
+# Added by ForgeCode installer
+export PATH="/home/mlorenc/.local/bin:$PATH"
 typeset -U path
 path=(
   "$HOME/.local/bin"
@@ -117,3 +119,15 @@ function __tab_complete_dispatch() {
 }
 zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
+
+# Google Cloud SDK completion
+if [[ -d "/opt/google-cloud-cli" ]]; then
+  source "/opt/google-cloud-cli/path.zsh.inc"
+  source "/opt/google-cloud-cli/completion.zsh.inc"
+fi
+
+# AWS CLI completion
+if command -v aws_completer >/dev/null 2>&1; then
+  complete -C "$(command -v aws_completer)" aws
+fi
+

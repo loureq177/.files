@@ -1,0 +1,74 @@
+* {
+    /* Używamy czcionki, o której wspomniałeś */
+    font-family: "JetBrainsMono Nerd Font Propo", sans-serif;
+    font-size: 16.5px;
+    font-weight: 800; /* Większy font-weight */
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+window#waybar {
+    /* Czarne tło z lekką przezroczystością (blur nakłada sam Hyprland) */
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+}
+
+/* Usuwamy tła ("kolorowe boxy") z poszczególnych modułów i zostawiamy sam tekst/ikony */
+#workspaces button,
+#window,
+#clock,
+#battery,
+#cpu,
+#memory {
+    background: transparent;
+    color: #ffffff;
+    padding: 0 10px;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    color: #aaaaaa; /* Nieaktywne obszary robocze lekko szare */
+}
+
+#workspaces button.active {
+    color: #ffffff; /* Aktywny obszar roboczy biały */
+}
+
+#workspaces button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: inherit;
+    text-shadow: inherit;
+    border-radius: 4px;
+}
+
+#window {
+    font-weight: 700;
+}
+
+#battery {
+    color: #ffffff;
+}
+
+#battery.charging, #battery.plugged {
+    color: #26a65b; /* Kolor zielony podczas ładowania, żeby było widać */
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: #000000;
+    }
+}
+
+#battery.critical:not(.charging) {
+    background-color: #f53c3c;
+    color: #ffffff;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
