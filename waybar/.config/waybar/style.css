@@ -21,6 +21,7 @@ window#waybar {
 #window,
 #clock,
 #battery,
+#network,
 #cpu,
 #memory {
     background: transparent;
