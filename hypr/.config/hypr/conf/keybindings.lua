@@ -23,13 +23,7 @@ hl.bind(
 )
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd(programs.btop))
-hl.bind(
-	mainMod .. " + M",
-	hl.dsp.exec_cmd(
-		"hyprctl clients | grep -iq 'class: spotify' && hyprctl dispatch focuswindow class:spotify || "
-			.. programs.spotify
-	)
-)
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exit())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(programs.fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
@@ -79,7 +73,6 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 -- Screenshots
 hl.bind("Print", hl.dsp.exec_cmd("grimblast --freeze copysave area"))
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grimblast copysave output"))
-hl.bind(mainMod .. " + ALT + L", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + Period", hl.dsp.exec_cmd("rofi -show emoji -modi emoji"))
 
 -- Volume and brightness (swayosd)
