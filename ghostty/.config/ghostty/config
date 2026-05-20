@@ -5,7 +5,7 @@ theme = "TokyoNight Moon"
 font-family = JetBrainsMono Nerd Font Mono
 font-family = "Noto Sans CJK JP"
 
-font-size = 14
+font-size = 13
 cursor-style = block
 cursor-style-blink = false
 adjust-cell-height = 5%
