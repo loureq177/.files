@@ -71,8 +71,8 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Screenshots
-hl.bind("Print", hl.dsp.exec_cmd("grimblast --freeze copysave area"))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grimblast copysave output"))
+hl.bind("Print", hl.dsp.exec_cmd("grimblast --freeze copysave area ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grimblast copysave output ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png"))
 hl.bind(mainMod .. " + Period", hl.dsp.exec_cmd("rofi -show emoji -modi emoji"))
 
 -- Volume and brightness (swayosd)
