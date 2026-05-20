@@ -61,3 +61,10 @@ hl.window_rule({
 	workspace = "special:special",
 	float = true,
 })
+
+-- Browser to workspace 1
+hl.window_rule({
+	name = "browser-workspace",
+	match = { class = ".*[Zz]en.*" },
+	workspace = "1",
+})

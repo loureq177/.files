@@ -11,13 +11,15 @@ hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(programs.terminal))
 hl.bind(
 	mainMod .. " + B",
 	hl.dsp.exec_cmd(
-		"hyprctl clients | grep -iq 'class:.*zen' && hyprctl dispatch focuswindow 'class:.*zen.*' || " .. programs.browser
+		"hyprctl clients | grep -iq 'class:.*zen' && hyprctl dispatch focuswindow 'class:.*zen.*' || "
+			.. programs.browser
 	)
 )
 hl.bind(
 	mainMod .. " + C",
 	hl.dsp.exec_cmd(
-		"hyprctl clients | grep -iq 'class:.*discord' && hyprctl dispatch focuswindow 'class:.*discord.*' || " .. programs.discord
+		"hyprctl clients | grep -iq 'class:.*discord' && hyprctl dispatch focuswindow 'class:.*discord.*' || "
+			.. programs.discord
 	)
 )
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
@@ -26,7 +28,6 @@ hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("hyprlock"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exit())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(programs.fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | rofi -dmenu -p 'Clipboard' -display-columns 2 | cliphist decode | wl-copy"))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + space", hl.dsp.exec_cmd(programs.launcher))
 hl.bind(mainMod .. " + SHIFT + space", hl.dsp.exec_cmd(programs.runner))
@@ -71,8 +72,14 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Screenshots
-hl.bind("Print", hl.dsp.exec_cmd("grimblast --freeze copysave area ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png"))
-hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grimblast copysave output ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png"))
+hl.bind(
+	"Print",
+	hl.dsp.exec_cmd("grimblast --freeze copysave area ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png")
+)
+hl.bind(
+	"SHIFT + Print",
+	hl.dsp.exec_cmd("grimblast copysave output ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png")
+)
 hl.bind(mainMod .. " + Period", hl.dsp.exec_cmd("rofi -show emoji -modi emoji"))
 
 -- Volume and brightness (swayosd)
