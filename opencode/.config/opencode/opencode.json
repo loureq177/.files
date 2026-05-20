@@ -1,11 +1,21 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "formatter": true,
+  "compaction": {
+    "auto": true
+  },
   "permission": {
     "read": "allow",
     "glob": "allow",
     "grep": "allow",
     "list": "allow",
-    "edit": "allow",
+    "edit": "ask",
+    "todowrite": "allow",
+    "webfetch": "allow",
+    "lsp": "allow",
+    "task": "allow",
+    "skill": "ask",
+    "question": "allow",
     "bash": {
       "git status*": "allow",
       "git diff*": "allow",
@@ -14,12 +24,18 @@
       "git branch*": "allow",
       "ls*": "allow",
       "pwd": "allow",
-      "echo *": "allow",
-      "find *": "allow",
-      "grep *": "allow",
-      "cat *": "allow",
+      "echo*": "allow",
+      "find*": "allow",
+      "grep*": "allow",
+      "cat*": "allow",
       "paru -Q*": "allow",
       "pacman -Q*": "allow",
+      "rg*": "allow",
+      "fd*": "allow",
+      "bat*": "allow",
+      "tree*": "allow",
+      "which*": "allow",
+      "type*": "allow",
       "*": "ask"
     }
   }
