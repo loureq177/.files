@@ -49,11 +49,6 @@
     "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SOURCE@ 5%+",
     "on-scroll-down": "wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-",
   },
-  "custom/clipboard": {
-    "format": "󰨸",
-    "on-click": "~/.config/hypr/scripts/cliphist-rofi-img.sh",
-    "tooltip": false,
-  },
   "bluetooth": {
     "format": "",
     "format-connected": " {device_alias}",
