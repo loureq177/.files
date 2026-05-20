@@ -18,3 +18,7 @@ hl.env("MOZ_ENABLE_WAYLAND", 1)
 hl.env("XCURSOR_THEME", "default")
 hl.env("XCURSOR_SIZE", 24)
 hl.env("HYPRCURSOR_SIZE", 24)
+
+-- Wayland optimizations for Electron/Chromium and LibreOffice
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+hl.env("SAL_USE_VCLPLUGIN", "gtk3")

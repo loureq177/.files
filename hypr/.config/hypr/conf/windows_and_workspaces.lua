@@ -47,3 +47,17 @@ hl.window_rule({
 	move = "20 monitor_h-120",
 	float = true,
 })
+
+-- Discord and Spotify to special workspace as floating
+hl.window_rule({
+	name = "discord-special",
+	match = { class = ".*discord.*" },
+	workspace = "special:special",
+	float = true,
+})
+hl.window_rule({
+	name = "spotify-special",
+	match = { class = ".*[Ss]potify.*" },
+	workspace = "special:special",
+	float = true,
+})
