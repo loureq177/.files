@@ -4,6 +4,7 @@
   "compaction": {
     "auto": true
   },
+  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"],
   "permission": {
     "read": "allow",
     "glob": "allow",
@@ -28,8 +29,8 @@
       "find*": "allow",
       "grep*": "allow",
       "cat*": "allow",
-      "paru -Q*": "allow",
-      "pacman -Q*": "allow",
+      "paru -q*": "allow",
+      "pacman -q*": "allow",
       "rg*": "allow",
       "fd*": "allow",
       "bat*": "allow",
