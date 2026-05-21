@@ -54,12 +54,16 @@ hl.window_rule({
 	match = { class = ".*discord.*" },
 	workspace = "special:special",
 	float = true,
+	size = "90% 90%",
+	center = true,
 })
 hl.window_rule({
 	name = "spotify-special",
 	match = { class = ".*[Ss]potify.*" },
 	workspace = "special:special",
 	float = true,
+	size = "90% 90%",
+	center = true,
 })
 
 -- Browser to workspace 1
