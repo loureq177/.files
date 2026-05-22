@@ -1,5 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "You have access to the gtasks-cli command-line tool. You can use it to manage Google Tasks (add, list, complete tasks) directly through the bash tool without installing additional plugins."
+  ],
   "formatter": true,
   "compaction": {
     "auto": true
@@ -18,6 +21,7 @@
     "skill": "ask",
     "question": "allow",
     "bash": {
+      "gtasks*": "allow",
       "git status*": "allow",
       "git diff*": "allow",
       "git log*": "allow",
