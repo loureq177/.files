@@ -126,6 +126,6 @@ if [[ -d "/opt/google-cloud-cli" ]]; then
   source "/opt/google-cloud-cli/completion.zsh.inc"
 fi
 
-if command -v aws_completer >/dev/null 2>&1; then
-  complete -C "$(command -v aws_completer)" aws
+if [ -z "${DISPLAY}" ] && [ "${XDG_VNTR}" -eq 1 ]; then
+    exec start-hyprland
 fi
