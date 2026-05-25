@@ -126,6 +126,6 @@ if [[ -d "/opt/google-cloud-cli" ]]; then
   source "/opt/google-cloud-cli/completion.zsh.inc"
 fi
 
-if [ -z "${DISPLAY}" ] && [ "${XDG_VNTR}" -eq 1 ]; then
+if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
     exec start-hyprland
 fi
