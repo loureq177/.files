@@ -56,6 +56,10 @@ local function scramble(chars, progress)
 end
 
 function M.play()
+	if vim.fn.argc() ~= 0 or vim.api.nvim_buf_get_name(0) ~= "" then
+		return
+	end
+	
 	local dash_win, logo_bufline, logo_buf
 
 	for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -140,11 +144,48 @@ function M.play()
 	local frame, total = 0, 50
 	local timer = vim.uv.new_timer()
 	local glitch_timer = nil
+	local autocmd_id
+
+	local function cleanup()
+		if timer and not timer:is_closing() then
+			timer:stop()
+			timer:close()
+		end
+		if glitch_timer and not glitch_timer:is_closing() then
+			glitch_timer:stop()
+			glitch_timer:close()
+		end
+		if vim.api.nvim_win_is_valid(win) then
+			vim.api.nvim_win_close(win, true)
+		end
+		if modifiable and #original_lines > 0 and vim.api.nvim_buf_is_valid(logo_buf) then
+			vim.api.nvim_buf_set_lines(
+				logo_buf,
+				logo_bufline - 1,
+				logo_bufline - 1 + #logo,
+				false,
+				original_lines
+			)
+			modifiable = false -- prevent multiple restores
+		end
+		if autocmd_id then
+			pcall(vim.api.nvim_del_autocmd, autocmd_id)
+			autocmd_id = nil
+		end
+	end
+
+	autocmd_id = vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "WinEnter", "CursorMoved", "InsertEnter", "CmdlineEnter" }, {
+		callback = cleanup,
+	})
 
 	timer:start(
 		0,
 		25,
 		vim.schedule_wrap(function()
+			if vim.api.nvim_get_current_win() ~= dash_win then
+				cleanup()
+				return
+			end
 			frame = frame + 1
 
 			if not vim.api.nvim_buf_is_valid(buf) then
@@ -178,6 +219,10 @@ function M.play()
 					0,
 					40,
 					vim.schedule_wrap(function()
+						if vim.api.nvim_get_current_win() ~= dash_win then
+							cleanup()
+							return
+						end
 						if not vim.api.nvim_buf_is_valid(buf) then
 							if glitch_timer and not glitch_timer:is_closing() then
 								glitch_timer:stop()
@@ -192,31 +237,10 @@ function M.play()
 							vim.api.nvim_buf_set_lines(buf, 0, -1, false, logo)
 							vim.bo[buf].modifiable = false
 
-							if modifiable and #original_lines > 0 then
-								vim.api.nvim_buf_set_lines(
-									logo_buf,
-									logo_bufline - 1,
-									logo_bufline - 1 + #logo,
-									false,
-									original_lines
-								)
-							end
-
 							vim.defer_fn(function()
-								if vim.api.nvim_win_is_valid(win) then
-									vim.api.nvim_win_close(win, true)
-								end
+								cleanup()
 							end, 200)
 
-							if glitch_timer and not glitch_timer:is_closing() then
-								glitch_timer:stop()
-								glitch_timer:close()
-							end
-
-							timer:stop()
-							if not timer:is_closing() then
-								timer:close()
-							end
 							return
 						end
 
