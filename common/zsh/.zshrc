@@ -1,27 +1,3 @@
-export PATH="/home/mlorenc/.local/bin:$PATH"
-typeset -U path
-path=(
-  "$HOME/.local/bin"
-  "$HOME/.cargo/bin"
-  $path
-)
-
-[[ -d "$HOME/.config/herd-lite/bin" ]] && path=("$HOME/.config/herd-lite/bin" $path)
-[[ -d "$HOME/.bun/bin" ]] && path=("$HOME/.bun/bin" $path)
-[[ -d "$HOME/.lmstudio/bin" ]] && path+=("$HOME/.lmstudio/bin")
-
-export EDITOR='nvim'
-export VISUAL='nvim'
-[[ -n "$SSH_CONNECTION" ]] && export EDITOR='vim'
-
-if [[ -d "$HOME/.config/herd-lite/bin" && ":${PHP_INI_SCAN_DIR:-}:" != *":$HOME/.config/herd-lite/bin:"* ]]; then
-  export PHP_INI_SCAN_DIR="$HOME/.config/herd-lite/bin${PHP_INI_SCAN_DIR:+:$PHP_INI_SCAN_DIR}"
-fi
-
-[[ -d "$HOME/.bun/bin" ]] && export BUN_INSTALL="$HOME/.bun"
-
-export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
-export GOPATH="$HOME/.go"
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
 export BAT_THEME="tokyonight_moon"
@@ -60,11 +36,11 @@ alias ls="eza -l --icons --group-directories-first --no-user --no-time --no-perm
 alias l="eza -laB --icons --group-directories-first"
 alias cat="bat -pp"
 alias grep="rg"
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-alias ......="cd ../../../../.."
+alias ..="cd ../"
+alias ...="cd ../../"
+alias ....="cd ../../../"
+alias .....="cd ../../../../"
+alias ......="cd ../../../../../"
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 if [[ ! -d "$ZINIT_HOME" ]]; then
@@ -84,6 +60,7 @@ fi
 
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
+command -v dircolors >/dev/null 2>&1 && eval "$(dircolors -b)"
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
@@ -96,14 +73,13 @@ zinit light Aloxaf/fzf-tab
 
 zinit ice wait lucid
 zinit light zsh-users/zsh-autosuggestions
+
 zinit ice wait lucid
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
-command -v dircolors >/dev/null 2>&1 && eval "$(dircolors -b)"
 command -v fzf >/dev/null 2>&1 && source <(fzf --zsh)
-command -v thefuck >/dev/null 2>&1 && eval "$(thefuck --alias)"
 
 (( ${+functions[compdef]} )) && compdef _cd cd
 
@@ -129,3 +105,17 @@ fi
 if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
     exec start-hyprland
 fi
+
+alias lava="lavat -gGk f9a600 -c a00000"
+lavat() {
+    local base_color=$(pastel random -n 1 | pastel saturate 1 | pastel darken 1)
+    local angle=$(( 135 + RANDOM % 186 ))
+
+    local rim=$(pastel rotate "$angle" "$base_color" | pastel lighten .64)
+    local bubble=$(echo "$base_color" | pastel lighten .44)
+
+    local bubble=$(echo "$bubble" | pastel format hex | tr -d '#')
+    local rim=$(echo "$rim" | pastel format hex | tr -d '#')
+
+    command lavat -Ggs7 -R1 -r8 -b12 -c "$bubble" -k "$rim" $*
+}
