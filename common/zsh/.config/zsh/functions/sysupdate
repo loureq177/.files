@@ -1,0 +1,16 @@
+#!/usr/bin/env zsh
+
+paru -Syu --devel
+
+zinit update --all
+zinit self-update
+
+nvim --headless "+Lazy! sync" +qa
+
+if command -v bun >/dev/null 2>&1; then
+    bun upgrade
+fi
+
+if command -v rustup >/dev/null 2>&1; then
+    rustup update
+fi

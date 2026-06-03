@@ -1,3 +1,14 @@
+typeset -U path
+path=(
+  "$HOME/.local/bin"
+  "$HOME/.cargo/bin"
+  $path
+)
+
+[[ -d "$HOME/.config/herd-lite/bin" ]] && path=("$HOME/.config/herd-lite/bin" $path)
+[[ -d "$HOME/.bun/bin" ]] && path=("$HOME/.bun/bin" $path)
+[[ -d "$HOME/.lmstudio/bin" ]] && path+=("$HOME/.lmstudio/bin")
+
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
 export BAT_THEME="tokyonight_moon"
@@ -9,7 +20,7 @@ export FZF_CTRL_T_OPTS='--preview "bat --color=always --style=numbers --line-ran
 export FZF_ALT_C_OPTS='--preview "eza -T -L 3 --icons --color=always {}"'
 
 HISTSIZE=10000
-HISTFILE=~/.zsh_history
+HISTFILE="$ZDOTDIR/.zsh_history"
 SAVEHIST=$HISTSIZE
 HISTDUP=erase
 setopt appendhistory
@@ -49,18 +60,24 @@ if [[ ! -d "$ZINIT_HOME" ]]; then
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
-fpath=(~/.zfunc $fpath)
+fpath=(~/.config/zsh/functions $fpath)
+autoload -Uz ~/.config/zsh/functions/*(N:t)
 
 autoload -Uz compinit
-if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
-  compinit
+if [[ -n $ZDOTDIR/.zcompdump(#qN.mh+24) ]]; then
+  compinit -d "$ZDOTDIR/.zcompdump"
 else
-  compinit -C
+  compinit -C -d "$ZDOTDIR/.zcompdump"
+fi
+
+if [[ -s "$ZDOTDIR/.zcompdump" && (! -s "$ZDOTDIR/.zcompdump.zwc" || "$ZDOTDIR/.zcompdump" -nt "$ZDOTDIR/.zcompdump.zwc") ]]; then
+  zcompile "$ZDOTDIR/.zcompdump"
 fi
 
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
-command -v dircolors >/dev/null 2>&1 && eval "$(dircolors -b)"
+[[ -f ~/.config/zsh/.dircolors.zsh ]] && source ~/.config/zsh/.dircolors.zsh
+
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
@@ -77,9 +94,9 @@ zinit light zsh-users/zsh-autosuggestions
 zinit ice wait lucid
 zinit light zdharma-continuum/fast-syntax-highlighting
 
-command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
-command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh --cmd cd)"
-command -v fzf >/dev/null 2>&1 && source <(fzf --zsh)
+[[ -f ~/.config/zsh/.starship.zsh ]] && source ~/.config/zsh/.starship.zsh
+[[ -f ~/.config/zsh/.zoxide.zsh ]] && source ~/.config/zsh/.zoxide.zsh
+[[ -f ~/.config/zsh/.fzf.zsh ]] && source ~/.config/zsh/.fzf.zsh
 
 (( ${+functions[compdef]} )) && compdef _cd cd
 
@@ -97,25 +114,8 @@ function __tab_complete_dispatch() {
 zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
 
-if [[ -d "/opt/google-cloud-cli" ]]; then
-  source "/opt/google-cloud-cli/path.zsh.inc"
-  source "/opt/google-cloud-cli/completion.zsh.inc"
-fi
-
-if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+if [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
     exec start-hyprland
 fi
 
-alias lava="lavat -gGk f9a600 -c a00000"
-lavat() {
-    local base_color=$(pastel random -n 1 | pastel saturate 1 | pastel darken 1)
-    local angle=$(( 135 + RANDOM % 186 ))
-
-    local rim=$(pastel rotate "$angle" "$base_color" | pastel lighten .64)
-    local bubble=$(echo "$base_color" | pastel lighten .44)
-
-    local bubble=$(echo "$bubble" | pastel format hex | tr -d '#')
-    local rim=$(echo "$rim" | pastel format hex | tr -d '#')
-
-    command lavat -Ggs7 -R1 -r8 -b12 -c "$bubble" -k "$rim" $*
-}
+ssh-add -l &>/dev/null || ssh-add
