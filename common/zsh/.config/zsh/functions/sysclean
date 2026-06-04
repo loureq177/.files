@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+local orphans
+orphans=$(paru -Qdtq)
+if [ -n "$orphans" ]; then
+    echo "$orphans" | xargs paru -Rns --noconfirm
+fi
+
+paru -Scc --noconfirm
+
+sudo rm -rf /var/cache/pacman/pkg/*
+
+find "$HOME/.cache" -type f -atime +30 -delete 2>/dev/null || true
+
+podman system prune -f
