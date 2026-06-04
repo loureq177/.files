@@ -61,7 +61,6 @@ fi
 source "${ZINIT_HOME}/zinit.zsh"
 
 fpath=(~/.config/zsh/functions $fpath)
-autoload -Uz ~/.config/zsh/functions/*(N:t)
 
 zinit light zsh-users/zsh-completions
 
