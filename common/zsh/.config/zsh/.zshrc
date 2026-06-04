@@ -63,8 +63,14 @@ source "${ZINIT_HOME}/zinit.zsh"
 fpath=(~/.config/zsh/functions $fpath)
 autoload -Uz ~/.config/zsh/functions/*(N:t)
 
+zinit light zsh-users/zsh-completions
+
 autoload -Uz compinit
-if [[ -n $ZDOTDIR/.zcompdump(#qN.mh+24) ]]; then
+setopt extended_glob
+local -a zcompdump_stale=("$ZDOTDIR/.zcompdump"(#qN.mh+24))
+unsetopt extended_glob
+
+if (( ${#zcompdump_stale} )); then
   compinit -d "$ZDOTDIR/.zcompdump"
 else
   compinit -C -d "$ZDOTDIR/.zcompdump"
@@ -85,13 +91,8 @@ zstyle ':completion:*:*:*:*:processes' command 'ps -ef'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'command ls --color=auto -- "$realpath"'
 zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'command ls --color=auto -- "$realpath"'
 
-zinit light zsh-users/zsh-completions
 zinit light Aloxaf/fzf-tab
-
-zinit ice wait lucid
 zinit light zsh-users/zsh-autosuggestions
-
-zinit ice wait lucid
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 [[ -f ~/.config/zsh/.starship.zsh ]] && source ~/.config/zsh/.starship.zsh
