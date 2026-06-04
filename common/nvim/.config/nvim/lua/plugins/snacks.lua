@@ -13,14 +13,20 @@ return {
 		terminal = { win = { wo = { winbar = "" } } },
 		explorer = { replace_netrw = true },
 		picker = {
+			hidden = true,
 			icons = {
 				tree = { vertical = "│  ", middle = "├╴ ", last = "└╴ " },
 			},
 			sources = {
 				explorer = {
 					hidden = true,
-					ignored = true,
 					layout = { layout = { position = "right", width = 30 } },
+				},
+				smart = {
+					hidden = true,
+				},
+				files = {
+					hidden = true,
 				},
 			},
 		},
