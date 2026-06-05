@@ -2,7 +2,7 @@
 set -euo pipefail
 
 source_root="/home/mlorenc"
-remote_root="google-drive:mlorenc-backup"
+remote_root="google-drive-backup:mlorenc-backup"
 
 dirs=(
     Desktop
