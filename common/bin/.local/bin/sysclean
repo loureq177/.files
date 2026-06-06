@@ -1,19 +1,16 @@
 #!/usr/bin/env zsh
 
-local orphans
 orphans=$(paru -Qdtq)
 
-
 if [ -n "$orphans" ]; then
-    echo "Orphaned packages to be deleted:\n$orphans" | xargs paru -Rns --noconfirm
+    echo "Orphaned packages to be deleted:\n$orphans"
+    paru -Rns ${=orphans} --noconfirm
 fi
 
-echo "Cleaning cached packages..."
+echo "\nCleaning cached packages..."
 paru -Scc --noconfirm
 
-echo "\nCleaning pacman cache..."
-sudo rm -rf /var/cache/pacman/pkg/*
-
 echo "\nCleaning ~/.cache older than 30 days..."
-find "$HOME/.cache" -type f -atime +30 -delete 2>/dev/null || true
+find "$HOME/.cache" -type f -mtime +30 -delete 2>/dev/null || true
+
 echo "\nYour system is clean."
