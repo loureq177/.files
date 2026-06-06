@@ -1,8 +1,9 @@
 ---
-description: Generates organized commit commands based on repo history
+description:
+  Generates organized git add && git commit commands based on repo history
 agent: plan
 ---
 
 Analyze the staged changes and the current commit history of this repository.
-Generate distinct, logically grouped Git commit commands. Strictly adhere to the
-commit conventions, formatting, and style already established in this project.
+Then generate git add && git commit -m "with commit messages" commands. Adhere
+to the commit formatting in this project.
