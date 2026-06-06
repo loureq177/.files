@@ -8,7 +8,7 @@ M.compare_with_clipboard = function()
 
 	local clipboard = vim.fn.getreg("+")
 	if clipboard == "" then
-		vim.notify("Clipboard jest pusty!", vim.log.levels.WARN)
+		vim.notify("Clipboard is empty!", vim.log.levels.WARN)
 		vim.cmd("close")
 		return
 	end
