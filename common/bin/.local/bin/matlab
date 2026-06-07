@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-xhost +local:
-
-podman run -d --rm \
+xhost +local: >/dev/null
+podman run -it --rm \
+    --privileged \
     --name matlab \
     --net=host \
     --ipc=host \
@@ -13,4 +13,4 @@ podman run -d --rm \
     -v "$HOME/.config/matlab:/home/matlab/.matlab" \
     --userns=keep-id \
     --device nvidia.com/gpu=all \
-    docker.io/mathworks/matlab:latest
+    localhost/matlab:latest
