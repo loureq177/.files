@@ -7,7 +7,6 @@ path=(
 
 [[ -d "$HOME/.config/herd-lite/bin" ]] && path=("$HOME/.config/herd-lite/bin" $path)
 [[ -d "$HOME/.bun/bin" ]] && path=("$HOME/.bun/bin" $path)
-[[ -d "$HOME/.lmstudio/bin" ]] && path+=("$HOME/.lmstudio/bin")
 
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
