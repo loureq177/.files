@@ -116,5 +116,3 @@ bindkey '^I' __tab_complete_dispatch
 if [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
     exec start-hyprland
 fi
-
-ssh-add -l &>/dev/null || ssh-add
