@@ -1,11 +1,9 @@
 #!/usr/bin/env zsh
 
-paru -Syu --devel
-
-zinit update --all
-zinit self-update
-
 nvim --headless "+Lazy! sync" +qa
+
+zsh -ic "zinit update --all && zinit self-update"
+
 
 if command -v bun >/dev/null 2>&1; then
     bun upgrade
@@ -17,3 +15,5 @@ fi
 
 fwupdmgr refresh
 fwupdmgr update -y
+
+paru -Syu --devel

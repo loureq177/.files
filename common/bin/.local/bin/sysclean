@@ -4,7 +4,7 @@ orphans=$(paru -Qdtq)
 
 if [ -n "$orphans" ]; then
     echo "Orphaned packages to be deleted:\n$orphans"
-    paru -Rns ${=orphans} --noconfirm
+    paru -Rns ${=orphans}
 fi
 
 echo "\nCleaning cached packages..."
