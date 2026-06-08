@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source_root="/home/mlorenc"
+remote_root="google-drive-backup:mlorenc-backup"
+
+dirs=(
+    Desktop
+    Documents
+    Notes
+    Pictures
+    Videos
+)
+
+for dir in "${dirs[@]}"; do
+    local_path="${source_root}/${dir}"
+    remote_path="${remote_root}/${dir}"
+
+    if [[ ! -d "$local_path" ]]; then
+        echo "Skipping missing directory: $local_path" >&2
+        continue
+    fi
+
+    echo "Syncing: $local_path -> $remote_path"
+    rclone sync \
+        "$local_path" \
+        "$remote_path" \
+        --progress \
+        --drive-chunk-size 128M \
+        --transfers 8 \
+        --checkers 8 \
+        --buffer-size 32M \
+        --fast-list \
+        --track-renames \
+        --drive-use-trash=false \
+        --verbose
+done
