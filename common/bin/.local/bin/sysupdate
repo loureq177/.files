@@ -16,4 +16,6 @@ fi
 fwupdmgr refresh
 fwupdmgr update -y
 
+tldr --update
+
 paru -Syu --devel
