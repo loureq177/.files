@@ -19,8 +19,6 @@
     "skill": "ask",
     "bash": {
       "*": "ask",
-      "gtasks *": "allow",
-      "gtasks": "allow",
       "git status": "allow",
       "git status *": "allow",
       "git diff": "allow",
