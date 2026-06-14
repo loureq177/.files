@@ -19,3 +19,5 @@ fwupdmgr update -y
 tldr --update
 
 paru -Syu --devel
+
+flatpak update
