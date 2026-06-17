@@ -87,14 +87,12 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu no
 zstyle ':completion:*:*:*:*:processes' command 'ps -ef'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'command ls --color=auto -- "$realpath"'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'command ls --color=auto -- "$realpath"'
 
 zinit light Aloxaf/fzf-tab
 zinit light zsh-users/zsh-autosuggestions
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 [[ -f ~/.config/zsh/.starship.zsh ]] && source ~/.config/zsh/.starship.zsh
-[[ -f ~/.config/zsh/.zoxide.zsh ]] && source ~/.config/zsh/.zoxide.zsh
 [[ -f ~/.config/zsh/.fzf.zsh ]] && source ~/.config/zsh/.fzf.zsh
 
 (( ${+functions[compdef]} )) && compdef _cd cd
