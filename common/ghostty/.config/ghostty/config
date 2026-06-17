@@ -10,22 +10,14 @@ cursor-style = block
 cursor-style-blink = false
 adjust-cell-height = 5%
 mouse-hide-while-typing = true
+mouse-scroll-multiplier = discrete:1,precision:1
 focus-follows-mouse = true
 confirm-close-surface = true
 clipboard-read = allow
 clipboard-write = allow
 font-feature = -calt
 maximize = true
-
-keybind = alt+left=goto_split:left
-keybind = alt+right=goto_split:right
-keybind = alt+up=goto_split:up
-keybind = alt+down=goto_split:down
-
-keybind = alt+shift+left=resize_split:left,10
-keybind = alt+shift+down=resize_split:down,10
-keybind = alt+shift+up=resize_split:up,10
-keybind = alt+shift+right=resize_split:right,10
+confirm-close-surface = false
 
 keybind = alt+d=scroll_page_lines:2
 keybind = alt+u=scroll_page_lines:-2
@@ -33,7 +25,5 @@ keybind = alt+u=scroll_page_lines:-2
 working-directory = home
 window-inherit-working-directory = false
 tab-inherit-working-directory = false
-split-inherit-working-directory = true
-
 app-notifications = no-clipboard-copy
 window-inherit-font-size = true
