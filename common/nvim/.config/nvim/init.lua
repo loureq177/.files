@@ -1,2 +1,3 @@
--- bootstrap lazy.nvim, LazyVim and your plugins
+vim.g.lazyvim_auto_root = false
+
 require("config.lazy")
