@@ -1,6 +1,6 @@
 ZDOTDIR="$HOME/.config/zsh"
 HISTFILE="$ZDOTDIR/.zsh_history"
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 export EDITOR='nvim'
 export VISUAL='nvim'
@@ -17,5 +17,3 @@ fi
 export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
 export GOPATH="$HOME/.go"
 
-# bun completions
-[ -s "/home/mlorenc/.bun/_bun" ] && source "/home/mlorenc/.bun/_bun"
