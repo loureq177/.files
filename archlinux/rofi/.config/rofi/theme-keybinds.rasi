@@ -13,7 +13,7 @@ window {
     border: 2px;
     border-color: @accent;
     border-radius: 8px;
-    width: 750px;
+    width: 950px;
 }
 inputbar {
     padding: 12px;
@@ -26,13 +26,13 @@ prompt {
 }
 listview {
     padding: 8px;
-    lines: 6;
+    lines: 15;
     columns: 1;
-    fixed-height: true;
+    fixed-height: false;
     scrollbar: true;
 }
 element {
-    padding: 8px;
+    padding: 6px 8px;
     border-radius: 4px;
 }
 element selected {
@@ -41,13 +41,10 @@ element selected {
 }
 element-text {
     vertical-align: 0.5;
-}
-element-icon {
-    size: 1.5em;
-    padding: 0 8px 0 0;
+    font: "JetBrainsMono Nerd Font Mono 12";
 }
 entry {
-    placeholder: "Search...";
+    placeholder: "Search keybindings...";
     placeholder-color: #565f89;
     text-color: @fg0;
 }
