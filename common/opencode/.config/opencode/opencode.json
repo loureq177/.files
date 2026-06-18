@@ -15,7 +15,7 @@
     "lsp": "allow",
     "question": "allow",
     "task": "allow",
-    "edit": "allow",
+    "edit": "ask",
     "skill": "allow",
     "external_directory": {
       "~/**": "ask"
