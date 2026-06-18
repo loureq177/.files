@@ -110,6 +110,6 @@ function __tab_complete_dispatch() {
 zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
 
-if [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+if [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
     exec start-hyprland
 fi
