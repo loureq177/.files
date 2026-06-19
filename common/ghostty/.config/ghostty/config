@@ -12,7 +12,6 @@ adjust-cell-height = 5%
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = discrete:1,precision:1
 focus-follows-mouse = true
-confirm-close-surface = true
 clipboard-read = allow
 clipboard-write = allow
 font-feature = -calt
