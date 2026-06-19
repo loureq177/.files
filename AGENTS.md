@@ -1,66 +1,50 @@
-# dotfiles
+# .files — dotfiles
 
-Dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Managed with **GNU Stow**. Every `stow --restow --target ~` creates symlinks
+from package dirs under this repo into `$HOME`. The `.stowrc` file skips `.git`,
+`README.md`, and `LICENSE`.
 
-## Structure
+## Layout
 
-- `common/` — OS-agnostic configs (bat, git, ghostty, neovim, opencode, starship, zsh, etc.)
-- `archlinux/` — Arch-only configs (hypr, waybar, rofi, mako, systemd, etc.)
+| Path              | Purpose                                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------- |
+| `archlinux/`      | Hyprland, Waybar, Rofi, Mako, Ly, Wireplumber, systemd user units, PWAs, `~/.local/bin` scripts         |
+| `common/`         | Neovim (LazyVim), Ghostty, Zsh, Starship, Git, Bat, Btop, Yazi, Prettier, SSH, XDG, MIME apps, Opencode |
+| `speech-to-text/` | Faster-Whisper daemon (dictate) — Python venv in `.venv/`                                               |
 
-Each package mirrors the target directory structure. E.g. `common/ghostty/.config/ghostty/config` stows to `~/.config/ghostty/config`.
+## Commands
 
-## Deploy
+```bash
+# Bootstrap (idempotent — safe to re-run)
+./install.sh
 
-```sh
-./install.sh   # chmod +x scripts, stow common/ + archlinux/, rebuild bat cache
+# Add or update a package
+cd common && stow --restow --target ~ <pkg>
+
+# Remove a package symlinks
+cd common && stow -D --target ~ <pkg>
 ```
-
-Or per-package: `cd common && stow --restow --target ~ ghostty`
-
-`.stowrc` ignores `.git`, `README.md`, `LICENSE`.
-
-## Key scripts (in `common/bin/.local/bin/`)
-
-| Script | What |
-|---|---|
-| `rclone_sync` | Google Drive backup via rclone |
-| `sysupdate` | Full update: nvim plugins, zinit, bun, rustup, paru |
-| `sysclean` | Remove orphans, clean pacman cache + `~/.cache` |
-| `matlab` | MATLAB via Podman with NVIDIA passthrough |
-
-## ZSH
-
-- `ZDOTDIR` set to `~/.config/zsh` via `.zshenv`
-- Plugin manager: zinit (zsh-completions, fzf-tab, autosuggestions, fast-syntax-highlighting)
-- zoxide for `cd`, starship prompt
-- Aliases: `ls`→`eza`, `cat`→`bat -pp`, `grep`→`rg`
-- Auto-starts Hyprland if tty1 with no display
-
-## Theme
-
-TokyoNight Moon throughout (bat, btop, gtk, mako, rofi, waybar, git/delta).
 
 ## Opencode config
 
-Permissions model + plugin + custom commands live in `common/opencode/.config/opencode/`. Built-in bash whitelist (`git`, `ls`, `rg`, `bat`, `paru`, etc.). Plugin uses `notify-send`.
+Custom commands live under `common/opencode/.config/opencode/commands/`:
+`audit-repo`, `commit-gen`, `explain-architecture`, `optimize-code`,
+`write-tests`. Permission rules in `opencode.json` whitelist common read-only
+commands (`git *`, `ls *`, `rg *`, `fd *`, `bat *`, `tree *`, `paru -q *`,
+`systemctl status *`, `journalctl *`) and allow edit with confirmation.
 
-## Git config
+## Automation
 
-- Editor: nvim, pager: delta (TokyoNight, side-by-side)
-- `autoSetupRemote = true`, default branch `main`
-- GitHub auth via `gh` credential helper
+- **`install.sh`** — OS-detecting bootstrap: stows archlinux → speech-to-text →
+  common, rebuilds bat cache, enables user systemd services.
+- **`archlinux/bin/.local/bin/`** — `sysupdate`, `sysclean`, `bedtime`,
+  `rclone_sync`, `systemd-notify-{fail,success}`, PWA launchers.
+- **`archlinux/systemd/`** — user services/timers for dictate-daemon, bedtime,
+  rclone-sync.
 
-## Neovim
+## Git
 
-LazyVim-based config in `common/nvim/`. Extras include black, prettier, php, python, typescript, sql, etc. Custom commands: `:CompareWithClipboard`.
-
-## CI / lint / test
-
-No CI, no test suite, no lint/typecheck runners. This is a static dotfiles repo — apply changes directly.
-
-## Gotchas
-
-- GDK and QT scale factors are set per-Hyprland-monitor in `hypr/monitors.lua`
-- `$SSH_AUTH_SOCK` set to `$XDG_RUNTIME_DIR/ssh-agent.socket`
-- Waybar style overrides use `.txt` file extension (loaded via `@import`)
-- `.zcompdump`, `lazy-lock.json`, `todo.md` are gitignored
+- Default branch: `main`
+- Remote: `git@github.com:loureq177/.files.git`
+- Commit style: conventional prefixes (`zsh:`, `hypr:`, `waybar:`, `rofi:`,
+  `common:`, `opencode:`, `install:`, etc.)
