@@ -9,8 +9,8 @@ from package dirs under this repo into `$HOME`. The `.stowrc` file skips `.git`,
 | Path              | Purpose                                                                                                 |
 | ----------------- | ------------------------------------------------------------------------------------------------------- |
 | `archlinux/`      | Hyprland, Waybar, Rofi, Mako, Ly, Wireplumber, systemd user units, PWAs, `~/.local/bin` scripts         |
-| `common/`         | Neovim (LazyVim), Ghostty, Zsh, Starship, Git, Bat, Btop, Yazi, Prettier, SSH, XDG, MIME apps, Opencode |
-| `speech-to-text/` | Faster-Whisper daemon (dictate) — Python venv in `.venv/`                                               |
+| `common/`         | Neovim (LazyVim), Ghostty, Zsh, Starship, Git, Bat, Btop, Yazi, SSH, XDG, MIME apps, Opencode |
+| `archlinux/speech-to-text/` | Faster-Whisper daemon (dictate) — Python venv in `.venv/`                                               |
 
 ## Commands
 
@@ -18,11 +18,14 @@ from package dirs under this repo into `$HOME`. The `.stowrc` file skips `.git`,
 # Bootstrap (idempotent — safe to re-run)
 ./install.sh
 
-# Add or update a package
-cd common && stow --restow --target ~ <pkg>
+# Add or update a package (from repo root)
+stow --restow --target ~ -d common <pkg>
 
 # Remove a package symlinks
-cd common && stow -D --target ~ <pkg>
+stow -D --target ~ -d common <pkg>
+
+# Or from package dir:
+# cd ~/.files/common && stow --restow --target ~ <pkg>
 ```
 
 ## Opencode config
