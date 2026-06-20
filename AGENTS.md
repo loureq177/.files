@@ -28,6 +28,9 @@ stow -D --target ~ -d common <pkg>
 # cd ~/.files/common && stow --restow --target ~ <pkg>
 ```
 
+> Editing existing files in a stowed package takes effect immediately (symlinks).
+> `stow --restow` is only required when **adding or removing** files in a package.
+
 ## Opencode config
 
 Custom commands live under `common/opencode/.config/opencode/commands/`:
