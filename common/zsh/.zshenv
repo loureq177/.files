@@ -1,6 +1,6 @@
 ZDOTDIR="$HOME/.config/zsh"
 HISTFILE="$ZDOTDIR/.zsh_history"
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.bun/bin:$PATH"
 
 export EDITOR='nvim'
 export VISUAL='nvim'
@@ -12,8 +12,7 @@ if [[ -d "$HOME/.config/herd-lite/bin" && ":${PHP_INI_SCAN_DIR:-}:" != *":$HOME/
   export PHP_INI_SCAN_DIR="$HOME/.config/herd-lite/bin${PHP_INI_SCAN_DIR:+:$PHP_INI_SCAN_DIR}"
 fi
 
-[[ -d "$HOME/.bun/bin" ]] && export BUN_INSTALL="$HOME/.bun"
+export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
 
 export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
-export GOPATH="$HOME/.go"
 
