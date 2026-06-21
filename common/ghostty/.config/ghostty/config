@@ -18,9 +18,6 @@ font-feature = -calt
 maximize = true
 confirm-close-surface = false
 
-keybind = alt+d=scroll_page_lines:2
-keybind = alt+u=scroll_page_lines:-2
-
 working-directory = home
 window-inherit-working-directory = false
 tab-inherit-working-directory = false
