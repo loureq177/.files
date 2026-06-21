@@ -1,6 +1,5 @@
 typeset -U path
 path=(
-  "$HOME/.cargo/bin"
   $path
 )
 
@@ -9,7 +8,6 @@ path=(
 
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
-export BAT_THEME="tokyonight_moon"
 
 export FZF_DEFAULT_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -18,9 +16,8 @@ export FZF_CTRL_T_OPTS='--preview "bat --color=always --style=numbers --line-ran
 export FZF_ALT_C_OPTS='--preview "eza -T -L 3 --icons --color=always {}"'
 
 HISTSIZE=10000
-HISTFILE="$ZDOTDIR/.zsh_history"
-SAVEHIST=$HISTSIZE
 HISTDUP=erase
+SAVEHIST=$HISTSIZE
 setopt appendhistory
 setopt sharehistory
 setopt extended_history
@@ -79,7 +76,7 @@ fi
 
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
 
-[[ -f ~/.config/zsh/.dircolors.zsh ]] && source ~/.config/zsh/.dircolors.zsh
+[[ -f "$ZDOTDIR/.dircolors.zsh" ]] && source "$ZDOTDIR/.dircolors.zsh"
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
@@ -88,11 +85,13 @@ zstyle ':completion:*:*:*:*:processes' command 'ps -ef'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'command ls --color=auto -- "$realpath"'
 
 zinit light Aloxaf/fzf-tab
+zinit ice wait lucid
 zinit light zsh-users/zsh-autosuggestions
+zinit ice wait lucid atload'_zsh_autosuggest_start'
 zinit light zdharma-continuum/fast-syntax-highlighting
 
-[[ -f ~/.config/zsh/.starship.zsh ]] && source ~/.config/zsh/.starship.zsh
-[[ -f ~/.config/zsh/.fzf.zsh ]] && source ~/.config/zsh/.fzf.zsh
+eval "$(starship init zsh)"
+[[ -f "$ZDOTDIR/.fzf.zsh" ]] && source "$ZDOTDIR/.fzf.zsh"
 
 (( ${+functions[compdef]} )) && compdef _cd cd
 
