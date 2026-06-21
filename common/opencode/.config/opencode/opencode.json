@@ -25,10 +25,6 @@
       "git *": "allow",
       "ls *": "allow",
       "pwd": "allow",
-      "echo *": "allow",
-      "find *": "allow",
-      "grep *": "allow",
-      "cat *": "allow",
       "paru -q *": "allow",
       "rg *": "allow",
       "fd *": "allow",
@@ -39,9 +35,7 @@
       "man *": "allow",
       "systemctl status *": "allow",
       "journalctl *": "allow",
-      "file *": "allow",
-      "head *": "allow",
-      "tail *": "allow"
+      "file *": "allow"
     }
   }
 }
