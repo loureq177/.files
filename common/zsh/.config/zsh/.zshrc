@@ -4,16 +4,14 @@ path=(
 )
 
 [[ -d "$HOME/.config/herd-lite/bin" ]] && path=("$HOME/.config/herd-lite/bin" $path)
-[[ -d "$HOME/.bun/bin" ]] && path=("$HOME/.bun/bin" $path)
-
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-export MANROFFOPT="-c"
+[[ -d "${BUN_INSTALL}/bin" ]] && path=("${BUN_INSTALL}/bin" $path)
 
 export FZF_DEFAULT_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git --type d'
-export FZF_CTRL_T_OPTS='--preview "bat --color=always --style=numbers --line-range=:500 {}"'
-export FZF_ALT_C_OPTS='--preview "eza -T -L 3 --icons --color=always {}"'
+export FZF_CTRL_T_OPTS='--no-height --preview "bat --color=always --style=numbers --line-range=:500 {}" --preview-window=right:50%'
+export FZF_ALT_C_OPTS='--no-height --preview "eza -T -L 3 --icons --color=always {}" --preview-window=right:50%'
+export FZF_DEFAULT_OPTS="--layout=reverse --border=rounded --info=inline --bind 'ctrl-/:toggle-preview'"
 
 HISTSIZE=10000
 HISTDUP=erase
@@ -48,7 +46,7 @@ alias ....="cd ../../../"
 alias .....="cd ../../../../"
 alias ......="cd ../../../../../"
 
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
 if [[ ! -d "$ZINIT_HOME" ]]; then
   mkdir -p "$(dirname "$ZINIT_HOME")"
   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
