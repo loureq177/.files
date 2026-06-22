@@ -1,7 +1,7 @@
 # A TOML linter such as https://github.com/tombi-toml/tombi can use this schema to validate your config.
 # If you encounter any issues, please make an issue at https://github.com/yazi-rs/schemas.
 
-#:schema https://yazi-rs.github.io/schemas/yazi.json
+#j:schema https://yazi-rs.github.io/schemas/yazi.json
 
 [mgr]
 ratio = [15, 15, 40]
@@ -12,7 +12,7 @@ sort_dir_first = true
 sort_translit = false
 sort_fallback = "alphabetical"
 linemode = "none"
-show_hidden = false
+show_hidden = true
 show_symlink = true
 scrolloff = 5
 mouse_events = ["click", "scroll", "drag"]
@@ -23,7 +23,7 @@ tab_size = 2
 max_width = 3000
 max_height = 3000
 cache_dir = ""
-image_delay = 30
+image_delay = 10
 image_filter = "triangle"
 image_quality = 80
 ueberzug_scale = 1
