@@ -46,6 +46,13 @@ alias ....="cd ../../../"
 alias .....="cd ../../../../"
 alias ......="cd ../../../../../"
 
+alias -s {txt,md,json,yaml,yml,toml,conf,ini,cfg,log,env,sh,bash,zsh,lua,py,rb,js,ts,jsx,tsx,c,h,cpp,hpp,go,rs,tex,css,scss,sass,gitignore,editorconfig,xml,sql,svelte,vue}=nvim
+alias -s html='zen'
+alias -s {pdf,PDF}=zen
+alias -s {png,jpg,jpeg,webp,gif,bmp,svg}=org.gnome.Loupe
+alias -s {mp4,mov,avi,mkv,webm,MP4,MOV}=org.gnome.Showtime
+alias -s {zip,rar,7z,tar,gz,xz,bz2,iso}=yazi
+
 ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
 if [[ ! -d "$ZINIT_HOME" ]]; then
   mkdir -p "$(dirname "$ZINIT_HOME")"
