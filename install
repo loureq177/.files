@@ -36,7 +36,10 @@ if [ "$OS" = "Linux" ]; then
         if [ ! -d "$SPEECH_DIR/.venv" ]; then
             python3 -m venv "$SPEECH_DIR/.venv"
         fi
-        "$SPEECH_DIR/.venv/bin/pip" install --quiet --upgrade faster-whisper
+        "$SPEECH_DIR/.venv/bin/pip" install --quiet --upgrade \
+            faster-whisper \
+            nvidia-cublas-cu12 \
+            nvidia-cudnn-cu12
     fi
 
     ARCH_PKGS=(bin electron hypr ly webapps rofi speech-to-text systemd waybar wireplumber)
