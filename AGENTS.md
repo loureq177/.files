@@ -8,7 +8,7 @@ from package dirs under this repo into `$HOME`. The `.stowrc` file skips `.git`,
 
 | Path              | Purpose                                                                                                 |
 | ----------------- | ------------------------------------------------------------------------------------------------------- |
-| `archlinux/`      | Hyprland, Waybar, Rofi, Mako, Ly, Wireplumber, systemd user units, PWAs, `~/.local/bin` scripts         |
+| `archlinux/`      | Hyprland, Waybar, Rofi, Mako, Ly, Wireplumber, systemd user units, web apps, `~/.local/bin` scripts         |
 | `common/`         | Neovim (LazyVim), Ghostty, Zsh, Starship, Git, Bat, Btop, Yazi, SSH, XDG, MIME apps, Opencode |
 | `archlinux/speech-to-text/` | Faster-Whisper daemon (dictate) — Python venv in `.venv/`                                               |
 
@@ -44,7 +44,7 @@ commands (`git *`, `ls *`, `rg *`, `fd *`, `bat *`, `tree *`, `paru -q *`,
 - **`install.sh`** — OS-detecting bootstrap: stows archlinux → speech-to-text →
   common, rebuilds bat cache, enables user systemd services.
 - **`archlinux/bin/.local/bin/`** — `sysupdate`, `sysclean`, `bedtime`,
-  `rclone_sync`, `systemd-notify-{fail,success}`, PWA launchers.
+  `rclone_sync`, `systemd-notify-{fail,success}`, web app launchers.
 - **`archlinux/systemd/`** — user services/timers for dictate-daemon, bedtime,
   rclone-sync.
 
