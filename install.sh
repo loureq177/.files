@@ -42,7 +42,7 @@ if [ "$OS" = "Linux" ]; then
             nvidia-cudnn-cu12
     fi
 
-    ARCH_PKGS=(bin electron hypr ly webapps rofi speech-to-text systemd waybar wireplumber)
+    ARCH_PKGS=(bin electron hypr ly paru swaync webapps rofi speech-to-text systemd waybar wireplumber)
     STOW_IGNORE='--ignore=\.venv --ignore=node_modules --ignore=__pycache__ --ignore=\.pyc$ --ignore=\.zwc$'
     (cd archlinux && stow --verbose --restow --target ~ $STOW_IGNORE "${ARCH_PKGS[@]}")
 fi
