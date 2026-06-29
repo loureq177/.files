@@ -1,13 +1,13 @@
 custom-shader = ~/.config/ghostty/shaders/cursor_warp.glsl
 custom-shader-animation = always
-theme = "TokyoNight Moon"
+theme = "TokyoNight"
 
 font-family = JetBrainsMono Nerd Font Mono
 font-family = "Noto Sans CJK JP"
-window-padding-x = 10
-window-padding-y = 10
+window-padding-x = 8
+window-padding-y = 8
 
-font-size = 13
+font-size = 16
 cursor-style = block
 cursor-style-blink = false
 mouse-hide-while-typing = true
