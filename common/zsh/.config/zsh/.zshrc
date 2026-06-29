@@ -46,7 +46,7 @@ alias ....="cd ../../../"
 alias .....="cd ../../../../"
 alias ......="cd ../../../../../"
 
-alias -s {txt,md,json,yaml,yml,toml,conf,ini,cfg,log,env,sh,bash,zsh,lua,py,rb,js,ts,jsx,tsx,c,h,cpp,hpp,go,rs,tex,css,scss,sass,gitignore,editorconfig,xml,sql,svelte,vue}=nvim
+alias -s {txt,md,json,yaml,yml,toml,conf,ini,cfg,log,env,bash,zsh,lua,py,rb,js,ts,jsx,tsx,c,h,cpp,hpp,go,rs,tex,css,scss,sass,gitignore,editorconfig,xml,sql,svelte,vue}=nvim
 alias -s html='zen'
 alias -s {pdf,PDF}=zen
 alias -s {png,jpg,jpeg,webp,gif,bmp,svg}=org.gnome.Loupe
