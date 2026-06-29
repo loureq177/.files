@@ -4,7 +4,7 @@
 [interactive]
     diffFilter = delta --color-only
 [delta]
-    syntax-theme = tokyonight_moon
+    syntax-theme = tokyonight
     features = decorations
     line-numbers = true
     side-by-side = true
