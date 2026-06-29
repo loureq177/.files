@@ -4,6 +4,8 @@ theme = "TokyoNight Moon"
 
 font-family = JetBrainsMono Nerd Font Mono
 font-family = "Noto Sans CJK JP"
+window-padding-x = 10
+window-padding-y = 10
 
 font-size = 13
 cursor-style = block
