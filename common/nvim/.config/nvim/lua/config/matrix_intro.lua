@@ -98,18 +98,7 @@ function M.play()
 	local original_lines = {}
 	local modifiable = vim.bo[logo_buf].modifiable
 
-	if modifiable then
-		original_lines = vim.api.nvim_buf_get_lines(logo_buf, logo_bufline - 1, logo_bufline - 1 + #logo, false)
-		vim.api.nvim_buf_set_lines(
-			logo_buf,
-			logo_bufline - 1,
-			logo_bufline - 1 + #logo,
-			false,
-			vim.tbl_map(function()
-				return ""
-			end, original_lines)
-		)
-	end
+
 
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.bo[buf].bufhidden = "wipe"
@@ -158,16 +147,7 @@ function M.play()
 		if vim.api.nvim_win_is_valid(win) then
 			vim.api.nvim_win_close(win, true)
 		end
-		if modifiable and #original_lines > 0 and vim.api.nvim_buf_is_valid(logo_buf) then
-			vim.api.nvim_buf_set_lines(
-				logo_buf,
-				logo_bufline - 1,
-				logo_bufline - 1 + #logo,
-				false,
-				original_lines
-			)
-			modifiable = false -- prevent multiple restores
-		end
+
 		if autocmd_id then
 			pcall(vim.api.nvim_del_autocmd, autocmd_id)
 			autocmd_id = nil
