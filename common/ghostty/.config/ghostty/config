@@ -1,4 +1,5 @@
 custom-shader = ~/.config/ghostty/shaders/cursor_warp.glsl
+custom-shader-animation = always
 theme = "TokyoNight"
 
 font-family = JetBrainsMono Nerd Font Mono
