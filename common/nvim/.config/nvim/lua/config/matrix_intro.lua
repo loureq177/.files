@@ -21,6 +21,14 @@ for _, line in ipairs(logo) do
 	table.insert(parsed_logo, vim.fn.split(line, "\\zs"))
 end
 
+local glitch_frames = {
+	{ row = 1, offset = 2 },
+	{ row = 3, offset = -1 },
+	{ row = 2, offset = 3 },
+	{ row = 4, offset = -2 },
+	{ row = 0, offset = 1 },
+}
+
 local function get_noise_char(depth)
 	if depth < 0.3 then
 		return noise1[math.random(#noise1)]
@@ -35,38 +43,51 @@ local function scramble(chars, progress)
 	local result = {}
 	for _, ch in ipairs(chars) do
 		if math.random() < progress then
-			table.insert(result, ch)
+			result[#result + 1] = ch
+		elseif ch == " " then
+			result[#result + 1] = (math.random() > 0.7 + progress * 0.3)
+					and get_noise_char(math.random())
+				or " "
 		else
-			if ch == " " then
-				if math.random() > 0.7 + (progress * 0.3) then
-					table.insert(result, get_noise_char(math.random()))
-				else
-					table.insert(result, " ")
-				end
-			else
-				if math.random() < progress * 0.5 then
-					table.insert(result, ch)
-				else
-					table.insert(result, get_noise_char(progress))
-				end
-			end
+			result[#result + 1] = (math.random() < progress * 0.5) and ch
+				or get_noise_char(progress)
 		end
 	end
 	return table.concat(result)
+end
+
+-- helper: stop+close a uv timer safely (was duplicated 3x)
+local function stop_timer(t)
+	if t and not t:is_closing() then
+		t:stop()
+		t:close()
+	end
+end
+
+-- helper: rotate a char-array in place (was duplicated inline in glitch block)
+local function rotate(chars, offset)
+	if offset > 0 then
+		for _ = 1, offset do
+			table.insert(chars, 1, table.remove(chars))
+		end
+	else
+		for _ = 1, -offset do
+			table.insert(chars, table.remove(chars, 1))
+		end
+	end
 end
 
 function M.play()
 	if vim.fn.argc() ~= 0 or vim.api.nvim_buf_get_name(0) ~= "" then
 		return
 	end
-	
-	local dash_win, logo_bufline, logo_buf
+
+	local dash_win, logo_bufline
 
 	for _, win in ipairs(vim.api.nvim_list_wins()) do
 		local buf = vim.api.nvim_win_get_buf(win)
 		if vim.bo[buf].filetype == "snacks_dashboard" then
 			dash_win = win
-			logo_buf = buf
 			local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
 			for i, line in ipairs(lines) do
 				if line:find("███") then
@@ -95,11 +116,6 @@ function M.play()
 	local hl = vim.api.nvim_get_hl(0, { name = "SnacksDashboardHeader", link = false })
 	local fg = hl.fg and string.format("#%06x", hl.fg) or "#3fb950"
 
-	local original_lines = {}
-	local modifiable = vim.bo[logo_buf].modifiable
-
-
-
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.bo[buf].bufhidden = "wipe"
 
@@ -116,47 +132,78 @@ function M.play()
 
 	local hl_names = {}
 	for i = 1, 5 do
-		local name = "MatrixAnimFg" .. i
-		hl_names[i] = name
-		vim.api.nvim_set_hl(0, name, { fg = fg, bold = i > 3 })
+		hl_names[i] = "MatrixAnimFg" .. i
+		vim.api.nvim_set_hl(0, hl_names[i], { fg = fg, bold = i > 3 })
 	end
 	vim.wo[win].winhighlight = "Normal:MatrixAnimFg3"
-
-	local glitch_frames = {
-		{ row = 1, offset = 2 },
-		{ row = 3, offset = -1 },
-		{ row = 2, offset = 3 },
-		{ row = 4, offset = -2 },
-		{ row = 0, offset = 1 },
-	}
 
 	local frame, total = 0, 50
 	local timer = vim.uv.new_timer()
 	local glitch_timer = nil
 	local autocmd_id
 
+	-- NOTE: this is the single source of truth for teardown.
+	-- Removed the redundant `nvim_get_current_win() ~= dash_win` checks
+	-- that were duplicated inside both timer callbacks below: WinLeave /
+	-- CursorMoved / WinEnter already fire (and cleanup) in the same tick
+	-- before those checks could ever be true, so they were dead code.
 	local function cleanup()
-		if timer and not timer:is_closing() then
-			timer:stop()
-			timer:close()
-		end
-		if glitch_timer and not glitch_timer:is_closing() then
-			glitch_timer:stop()
-			glitch_timer:close()
-		end
+		stop_timer(timer)
+		stop_timer(glitch_timer)
 		if vim.api.nvim_win_is_valid(win) then
 			vim.api.nvim_win_close(win, true)
 		end
-
 		if autocmd_id then
 			pcall(vim.api.nvim_del_autocmd, autocmd_id)
 			autocmd_id = nil
 		end
 	end
 
-	autocmd_id = vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave", "WinEnter", "CursorMoved", "InsertEnter", "CmdlineEnter" }, {
-		callback = cleanup,
-	})
+	autocmd_id = vim.api.nvim_create_autocmd(
+		{ "BufLeave", "WinLeave", "WinEnter", "CursorMoved", "InsertEnter", "CmdlineEnter" },
+		{ callback = cleanup }
+	)
+
+	local function set_lines(lines)
+		vim.bo[buf].modifiable = true
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+		vim.bo[buf].modifiable = false
+	end
+
+	local function start_glitch_phase()
+		local glitch_count = 0
+		glitch_timer = vim.uv.new_timer()
+		glitch_timer:start(
+			0,
+			40,
+			vim.schedule_wrap(function()
+				if not vim.api.nvim_buf_is_valid(buf) then
+					stop_timer(glitch_timer)
+					return
+				end
+
+				glitch_count = glitch_count + 1
+				if glitch_count > 8 or not vim.api.nvim_win_is_valid(win) then
+					set_lines(logo)
+					vim.defer_fn(cleanup, 200)
+					return
+				end
+
+				local glitch = glitch_frames[(glitch_count % #glitch_frames) + 1]
+				local glitched_lines = {}
+				for i, line in ipairs(logo) do
+					if i == glitch.row and glitch.row > 0 and glitch.row <= #logo then
+						local chars = vim.fn.split(line, "\\zs")
+						rotate(chars, glitch.offset)
+						glitched_lines[i] = table.concat(chars)
+					else
+						glitched_lines[i] = line
+					end
+				end
+				set_lines(glitched_lines)
+			end)
+		)
+	end
 
 	timer:start(
 		0,
@@ -169,10 +216,7 @@ function M.play()
 			frame = frame + 1
 
 			if not vim.api.nvim_buf_is_valid(buf) then
-				timer:stop()
-				if not timer:is_closing() then
-					timer:close()
-				end
+				stop_timer(timer)
 				return
 			end
 
@@ -180,75 +224,16 @@ function M.play()
 			local progress = p < 0.5 and 2 * p * p or -1 + (4 - 2 * p) * p
 
 			local lines = {}
-			for _, chars in ipairs(parsed_logo) do
-				table.insert(lines, scramble(chars, progress))
+			for i, chars in ipairs(parsed_logo) do
+				lines[i] = scramble(chars, progress)
 			end
-
-			vim.bo[buf].modifiable = true
-			vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+			set_lines(lines)
 
 			local hl_idx = math.min(5, math.floor(progress * 5) + 1)
 			vim.wo[win].winhighlight = "Normal:" .. hl_names[hl_idx]
 
-			vim.bo[buf].modifiable = false
-
 			if frame >= total then
-				local glitch_count = 0
-				glitch_timer = vim.uv.new_timer()
-				glitch_timer:start(
-					0,
-					40,
-					vim.schedule_wrap(function()
-						if vim.api.nvim_get_current_win() ~= dash_win then
-							cleanup()
-							return
-						end
-						if not vim.api.nvim_buf_is_valid(buf) then
-							if glitch_timer and not glitch_timer:is_closing() then
-								glitch_timer:stop()
-								glitch_timer:close()
-							end
-							return
-						end
-
-						glitch_count = glitch_count + 1
-						if glitch_count > 8 or not vim.api.nvim_win_is_valid(win) then
-							vim.bo[buf].modifiable = true
-							vim.api.nvim_buf_set_lines(buf, 0, -1, false, logo)
-							vim.bo[buf].modifiable = false
-
-							vim.defer_fn(function()
-								cleanup()
-							end, 200)
-
-							return
-						end
-
-						local glitched_lines = {}
-						for i, line in ipairs(logo) do
-							local glitch = glitch_frames[(glitch_count % #glitch_frames) + 1]
-							if i == glitch.row and glitch.row > 0 and glitch.row <= #logo then
-								local chars = vim.fn.split(line, "\\zs")
-								if glitch.offset > 0 then
-									for _ = 1, glitch.offset do
-										table.insert(chars, 1, table.remove(chars))
-									end
-								else
-									for _ = 1, -glitch.offset do
-										table.insert(chars, table.remove(chars, 1))
-									end
-								end
-								table.insert(glitched_lines, table.concat(chars))
-							else
-								table.insert(glitched_lines, line)
-							end
-						end
-
-						vim.bo[buf].modifiable = true
-						vim.api.nvim_buf_set_lines(buf, 0, -1, false, glitched_lines)
-						vim.bo[buf].modifiable = false
-					end)
-				)
+				start_glitch_phase()
 			end
 		end)
 	)
