@@ -9,13 +9,7 @@ return {
 			args = {
 				"fix",
 				"$FILENAME",
-				"--rules=@PSR12",
-				"--using-cache=no",
 				"--no-interaction",
-				"--allow-risky=yes",
-			},
-			env = {
-				PHP_CS_FIXER_IGNORE_ENV = "1",
 			},
 		}
 
