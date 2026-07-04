@@ -7,7 +7,6 @@ font-family = "Noto Sans CJK JP"
 window-padding-x = 8
 window-padding-y = 8
 
-font-size = 14
 cursor-style = block
 cursor-style-blink = false
 mouse-hide-while-typing = true
