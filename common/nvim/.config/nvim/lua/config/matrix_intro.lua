@@ -233,6 +233,7 @@ function M.play()
 			vim.wo[win].winhighlight = "Normal:" .. hl_names[hl_idx]
 
 			if frame >= total then
+				stop_timer(timer)
 				start_glitch_phase()
 			end
 		end)
