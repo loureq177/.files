@@ -1,0 +1,19 @@
+export PACKAGES=(
+    bat
+    btop
+    coreutils
+    eza
+    fd
+    hyperfine
+    neovim
+    npm
+    nvm
+    pipx
+    ripgrep
+    starship
+    stow
+    tldr
+    uv
+    yarn
+    yazi
+)
