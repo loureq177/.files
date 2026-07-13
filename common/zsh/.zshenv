@@ -39,3 +39,10 @@ export MATLAB_USERDIR="${XDG_CONFIG_HOME}/matlab"
 export GOPATH="${XDG_DATA_HOME}/go"
 export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
 
+
+# opencode
+export PATH=/Users/mlorenc/.opencode/bin:$PATH
+
+# macos
+export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+
