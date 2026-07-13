@@ -5,6 +5,4 @@ vim.opt.tabstop = 4
 vim.opt.scrolloff = 5
 vim.opt.mousescroll = "ver:1,hor:1"
 vim.opt.cmdheight = 0
-vim.opt.statuscolumn = "%s"
-vim.opt.number = false
 vim.opt.relativenumber = false
