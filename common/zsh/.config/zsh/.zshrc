@@ -117,3 +117,5 @@ bindkey '^I' __tab_complete_dispatch
 if [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
     exec start-hyprland
 fi
+
+[ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"
