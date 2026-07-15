@@ -14,13 +14,10 @@ return {
 		explorer = { replace_netrw = true },
 		picker = {
 			hidden = true,
-			icons = {
-				tree = { vertical = "│  ", middle = "├╴ ", last = "└╴ " },
-			},
 			sources = {
 				explorer = {
 					hidden = true,
-					layout = { layout = { position = "right", width = 30 } },
+					layout = { layout = { position = "right", width = 35 } },
 				},
 				smart = {
 					hidden = true,
