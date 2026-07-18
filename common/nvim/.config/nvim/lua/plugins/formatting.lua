@@ -8,12 +8,14 @@ return {
 
 			opts.formatters = opts.formatters or {}
 			opts.formatters.php_cs_fixer = {
+				stdin = false,
 				args = {
 					"fix",
 					"$FILENAME",
 					"--no-interaction",
 				},
 			}
+			return opts
 		end,
 	},
 }

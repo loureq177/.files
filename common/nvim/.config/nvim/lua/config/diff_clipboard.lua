@@ -13,22 +13,22 @@ M.compare_with_clipboard = function()
 		return
 	end
 
-	vim.api.nvim_put(vim.split(clipboard, "\n", { plain = true }), "l", false, true)
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(clipboard, "\n", { plain = true }))
 
 	vim.bo.buftype = "nofile"
 	vim.bo.bufhidden = "wipe"
 	vim.bo.swapfile = false
 	vim.bo.filetype = ft
 
-	vim.cmd("diffthis")
-	vim.cmd("wincmd p")
-	vim.cmd("diffthis")
-
 	vim.keymap.set("n", "q", "<cmd>diffoff!<CR><cmd>close<CR>", {
 		buffer = true,
 		silent = true,
 		desc = "Close diff view",
 	})
+
+	vim.cmd("diffthis")
+	vim.cmd("wincmd p")
+	vim.cmd("diffthis")
 
 	vim.notify("Diff with clipboard is shown. (q = exit)", vim.log.levels.INFO)
 end

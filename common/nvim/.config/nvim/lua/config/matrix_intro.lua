@@ -185,6 +185,7 @@ function M.play()
 				glitch_count = glitch_count + 1
 				if glitch_count > 8 or not vim.api.nvim_win_is_valid(win) then
 					set_lines(logo)
+					stop_timer(glitch_timer)
 					vim.defer_fn(cleanup, 200)
 					return
 				end
