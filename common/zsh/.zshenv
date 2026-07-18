@@ -41,7 +41,7 @@ export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.js
 
 
 # opencode
-export PATH=/Users/mlorenc/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 
 # macos
 export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
