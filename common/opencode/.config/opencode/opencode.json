@@ -1,7 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["test every command by using tool call before adding it to file"],
-  "plugin": ["@dietrichgebert/ponytail"],
+  //  "plugin": ["@dietrichgebert/ponytail"],
   "formatter": true,
   "lsp": true,
   "compaction": {
