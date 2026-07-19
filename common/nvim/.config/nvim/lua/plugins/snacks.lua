@@ -14,16 +14,20 @@ return {
 		explorer = { replace_netrw = true },
 		picker = {
 			hidden = true,
+			ignored = true,
 			sources = {
 				explorer = {
 					hidden = true,
+					ignored = true,
 					layout = { layout = { position = "right", width = 35 } },
 				},
 				smart = {
 					hidden = true,
+					ignored = true,
 				},
 				files = {
 					hidden = true,
+					ignored = true,
 				},
 			},
 		},
