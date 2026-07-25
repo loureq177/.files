@@ -12,6 +12,7 @@ export PACKAGES=(
     ngrok
     npm
     nvm
+    opencode
     pipx
     ripgrep
     starship
