@@ -1,11 +1,15 @@
 export PACKAGES=(
     bat
     btop
+    composer
     coreutils
     eza
     fd
+    glab
     hyperfine
+    mysql-client
     neovim
+    ngrok
     npm
     nvm
     pipx

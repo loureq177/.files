@@ -1,0 +1,50 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+
+export PATH="$HOME/.bun/bin:$PATH"
+
+_log_info() { echo "\033[0;34m[sysupdate]\033[0m $*"; }
+
+if command -v brew >/dev/null 2>&1; then
+    _log_info "Updating Homebrew packages and casks..."
+    brew update
+    brew upgrade
+    brew cleanup
+fi
+
+if command -v mas >/dev/null 2>&1; then
+    _log_info "Updating Mac App Store applications..."
+    mas upgrade || true
+fi
+
+if command -v nvim >/dev/null 2>&1; then
+    _log_info "Syncing Neovim plugins & Mason..."
+    nvim --headless "+Lazy! sync" "+Lazy load mason.nvim" "+MasonUpdate" "+qa" || true
+fi
+
+if command -v bun >/dev/null 2>&1; then
+    _log_info "Upgrading Bun..."
+    bun upgrade || true
+fi
+
+if command -v rustup >/dev/null 2>&1; then
+    _log_info "Updating Rust toolchain..."
+    rustup update || true
+fi
+
+if [ -d "$HOME/.local/share/zinit" ] || command -v zinit >/dev/null 2>&1; then
+    _log_info "Updating Zinit plugins..."
+    zsh -ic "zinit update --all && zinit self-update" || true
+fi
+
+if command -v tldr >/dev/null 2>&1; then
+    _log_info "Updating tldr cache..."
+    tldr --update || true
+fi
+
+if command -v softwareupdate >/dev/null 2>&1; then
+    _log_info "Checking macOS system updates..."
+    softwareupdate -l || true
+fi
+
+_log_info "macOS update completed!"
