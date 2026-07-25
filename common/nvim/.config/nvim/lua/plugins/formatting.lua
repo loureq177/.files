@@ -5,7 +5,7 @@ return {
 			opts.formatters_by_ft = opts.formatters_by_ft or {}
 			opts.formatters_by_ft.php = { "php_cs_fixer" }
 			opts.formatters_by_ft.markdown = { "prettier" }
-			opts.formatters_by_ft.python = { "isort", "ruff_format" }
+			opts.formatters_by_ft.python = { "ruff_organize_imports", "ruff_format" }
 
 			opts.formatters = opts.formatters or {}
 			opts.formatters.php_cs_fixer = {
