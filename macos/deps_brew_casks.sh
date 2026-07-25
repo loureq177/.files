@@ -1,6 +1,8 @@
 export CASKS=(
-    ghostty
-    maccy
     claude-code
     devin-cli
+    ghostty
+    maccy
+    mos
+    ngrok
 )

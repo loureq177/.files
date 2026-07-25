@@ -3,16 +3,21 @@ export PACKAGES=(
     btop
     composer
     coreutils
+    devin
     eza
     fd
+    fzf
     glab
     hyperfine
+    lazydocker
+    lazygit
     mysql-client
     neovim
     ngrok
     npm
     nvm
     opencode
+    php@8.2
     pipx
     ripgrep
     starship
