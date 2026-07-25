@@ -3,7 +3,6 @@ export PACKAGES=(
     btop
     composer
     coreutils
-    devin
     eza
     fd
     fzf
