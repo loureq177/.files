@@ -47,8 +47,8 @@ alias .....="cd ../../../../"
 alias ......="cd ../../../../../"
 
 alias -s {txt,md,json,yaml,yml,toml,conf,ini,cfg,log,env,bash,zsh,lua,py,rb,js,ts,jsx,tsx,c,h,cpp,hpp,go,rs,tex,css,scss,sass,gitignore,editorconfig,xml,sql,svelte,vue}=nvim
-alias -s html='zen'
-alias -s {pdf,PDF}=zen
+alias -s html='firefox'
+alias -s {pdf,PDF}=firefox
 alias -s {png,jpg,jpeg,webp,gif,bmp,svg}=xdg-open
 alias -s {mp4,mov,avi,mkv,webm,MP4,MOV}=xdg-open
 alias -s {zip,rar,7z,tar,gz,xz,bz2,iso}=yazi
