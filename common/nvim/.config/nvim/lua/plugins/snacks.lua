@@ -19,7 +19,7 @@ return {
 				explorer = {
 					hidden = true,
 					ignored = true,
-					layout = { layout = { position = "right", width = 35 } },
+					layout = { layout = { position = "right", width = 32 } },
 				},
 				smart = {
 					hidden = true,
