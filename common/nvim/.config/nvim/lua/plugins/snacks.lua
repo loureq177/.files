@@ -17,17 +17,7 @@ return {
 			ignored = false,
 			sources = {
 				explorer = {
-					hidden = true,
-					ignored = false,
 					layout = { layout = { position = "right", width = 32 } },
-				},
-				smart = {
-					hidden = true,
-					ignored = false,
-				},
-				files = {
-					hidden = true,
-					ignored = false,
 				},
 			},
 		},
