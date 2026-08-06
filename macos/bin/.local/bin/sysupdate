@@ -17,10 +17,11 @@ if command -v mas >/dev/null 2>&1; then
     mas upgrade || true
 fi
 
-if command -v nvim >/dev/null 2>&1; then
-    _log_info "Syncing Neovim plugins & Mason..."
-    nvim --headless "+Lazy! sync" "+Lazy load mason.nvim" "+MasonUpdate" "+qa" || true
-fi
+# TODO: headless mason update sucks hard
+# if command -v nvim >/dev/null 2>&1; then
+#     _log_info "Syncing Neovim plugins & Mason..."
+#     nvim --headless "+Lazy! sync" "+Lazy load mason.nvim" "+lua local r=require('mason-registry') local p=r.get_installed_package_names() local n=#p if n==0 then return vim.cmd'qa' end for _,v in ipairs(p) do r.get_package(v):install():once('closed',function() n=n-1 if n==0 then vim.cmd'qa' end end) end" || true
+# fi
 
 if command -v bun >/dev/null 2>&1; then
     _log_info "Upgrading Bun..."
