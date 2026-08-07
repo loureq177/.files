@@ -159,9 +159,10 @@ function M.play()
 		end
 	end
 
+	local group = vim.api.nvim_create_augroup("MatrixIntroTeardown", { clear = true })
 	autocmd_id = vim.api.nvim_create_autocmd(
 		{ "BufLeave", "WinLeave", "WinEnter", "CursorMoved", "InsertEnter", "CmdlineEnter" },
-		{ callback = cleanup }
+		{ group = group, callback = cleanup }
 	)
 
 	local function set_lines(lines)
