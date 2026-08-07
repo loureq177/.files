@@ -44,5 +44,7 @@ export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.js
 export PATH="$HOME/.opencode/bin:$PATH"
 
 # macos
-export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+if [[ -d "/opt/homebrew/opt/coreutils/libexec/gnubin" ]]; then
+    export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+fi
 
