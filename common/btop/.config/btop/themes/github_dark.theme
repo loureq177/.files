@@ -1,0 +1,81 @@
+# GitHub Dark theme for BTOP
+# Main background, leaves transparent if theme_background is set to False
+theme[main_bg]="#0d1117"
+
+# Main text color
+theme[main_fg]="#c9d1d9"
+
+# Title text color
+theme[title]="#58a6ff"
+
+# Highlight text color
+theme[hi_fg]="#58a6ff"
+
+# Selected item background color
+theme[selected_bg]="#21262d"
+
+# Selected item text color
+theme[selected_fg]="#58a6ff"
+
+# Inactive/disabled text color
+theme[inactive_fg]="#484f58"
+
+# Color of text appearing on top of graphs, i.e mebibytes etc.
+theme[graph_text]="#8b949e"
+
+# Background color of percentage meters
+theme[meter_bg]="#21262d"
+
+# Misc colors for outline boxes label text
+theme[proc_box]="#58a6ff"
+theme[cpu_box]="#58a6ff"
+theme[mem_box]="#bc8cff"
+theme[net_box]="#3fb950"
+
+# Box divider line color
+theme[div_line]="#30363d"
+
+# Temperature graph colors
+theme[temp_start]="#3fb950"
+theme[temp_mid]="#d29922"
+theme[temp_end]="#f85149"
+
+# CPU graph colors
+theme[cpu_start]="#3fb950"
+theme[cpu_mid]="#58a6ff"
+theme[cpu_end]="#bc8cff"
+
+# Mem/Disk free meter
+theme[free_start]="#3fb950"
+theme[free_mid]="#58a6ff"
+theme[free_end]="#bc8cff"
+
+# Mem/Disk cached meter
+theme[cached_start]="#58a6ff"
+theme[cached_mid]="#bc8cff"
+theme[cached_end]="#f85149"
+
+# Mem/Disk available meter
+theme[available_start]="#3fb950"
+theme[available_mid]="#d29922"
+theme[available_end]="#f85149"
+
+# Mem/Disk used meter
+theme[used_start]="#3fb950"
+theme[used_mid]="#d29922"
+theme[used_end]="#f85149"
+
+# Download graph colors
+theme[download_start]="#3fb950"
+theme[download_mid]="#58a6ff"
+theme[download_end]="#bc8cff"
+
+# Upload graph colors
+theme[upload_start]="#58a6ff"
+theme[upload_mid]="#bc8cff"
+theme[upload_end]="#f85149"
+
+# Process list color gradient
+theme[process_start]="#3fb950"
+theme[process_mid]="#58a6ff"
+theme[process_end]="#bc8cff"
