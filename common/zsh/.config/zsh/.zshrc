@@ -90,9 +90,9 @@ zstyle ':completion:*:*:*:*:processes' command 'ps -ef'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'command ls --color=auto -- "$realpath"'
 
 zinit light Aloxaf/fzf-tab
-zinit ice wait lucid
-zinit light zsh-users/zsh-autosuggestions
 zinit ice wait lucid atload'_zsh_autosuggest_start'
+zinit light zsh-users/zsh-autosuggestions
+zinit ice wait lucid
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 eval "$(starship init zsh)"
