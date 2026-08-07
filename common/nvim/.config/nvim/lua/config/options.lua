@@ -9,3 +9,9 @@ vim.opt.scrolloff = 5
 vim.opt.mousescroll = "ver:1,hor:1"
 vim.opt.cmdheight = 0
 vim.opt.relativenumber = false
+vim.opt.undofile = true
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
