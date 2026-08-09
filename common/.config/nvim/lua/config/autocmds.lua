@@ -11,3 +11,11 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.linebreak = true
 	end,
 })
+
+vim.api.nvim_create_autocmd("User", {
+	pattern = "SnacksDashboardOpened",
+	callback = function()
+		require("config.matrix_intro").play()
+	end,
+})
+
