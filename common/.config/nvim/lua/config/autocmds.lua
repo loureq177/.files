@@ -12,10 +12,4 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
-vim.api.nvim_create_autocmd("User", {
-	pattern = "SnacksDashboardOpened",
-	callback = function()
-		require("config.matrix_intro").play()
-	end,
-})
 
