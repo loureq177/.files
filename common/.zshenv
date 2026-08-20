@@ -3,7 +3,7 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
-ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 HISTFILE="$ZDOTDIR/.zsh_history"
 
 export CARGO_HOME="${XDG_DATA_HOME}/cargo"
@@ -27,7 +27,7 @@ export VISUAL='nvim'
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export MANROFFOPT="-c"
 
-[[ -n "$SSH_CONNECTION" ]] && export EDITOR='vim'
+[[ -n "$SSH_CONNECTION" ]] && export EDITOR='nvim'
 
 if [[ -d "$HOME/.config/herd-lite/bin" && ":${PHP_INI_SCAN_DIR:-}:" != *":$HOME/.config/herd-lite/bin:"* ]]; then
   export PHP_INI_SCAN_DIR="$HOME/.config/herd-lite/bin${PHP_INI_SCAN_DIR:+:$PHP_INI_SCAN_DIR}"
