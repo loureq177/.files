@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 set -euo pipefail
 
-export PATH="$HOME/.bun/bin:$PATH"
+export PATH="${BUN_INSTALL:-$HOME/.local/share/bun}/bin:$PATH"
 
 _log_info() { echo "\033[0;34m[sysupdate]\033[0m $*"; }
 
