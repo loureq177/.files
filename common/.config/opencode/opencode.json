@@ -21,7 +21,6 @@
       "~/**": "allow"
     },
     "bash": {
-      "git *": "allow",
       "git": "allow",
       "git status*": "allow",
       "git diff*": "allow",
@@ -31,7 +30,8 @@
       "git checkout*": "allow",
       "git add*": "allow",
       "git commit*": "allow",
-      "ls *": "allow",
+      "git stash*": "allow",
+      "git rev-parse*": "allow",
       "ls": "allow",
       "pwd": "allow",
       "echo *": "allow",
