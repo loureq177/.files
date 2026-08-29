@@ -13,7 +13,6 @@ mouse-scroll-multiplier = discrete:1,precision:1
 focus-follows-mouse = true
 clipboard-read = allow
 clipboard-write = allow
-font-feature = -calt
 confirm-close-surface = false
 app-notifications = no-clipboard-copy
 
