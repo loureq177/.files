@@ -1,8 +1,3 @@
-typeset -U path
-path=(
-  $path
-)
-
 [[ -d "$HOME/.config/herd-lite/bin" ]] && path=("$HOME/.config/herd-lite/bin" $path)
 [[ -d "${BUN_INSTALL}/bin" ]] && path=("${BUN_INSTALL}/bin" $path)
 
@@ -13,9 +8,9 @@ export FZF_CTRL_T_OPTS='--no-height --preview "bat --color=always --style=number
 export FZF_ALT_C_OPTS='--no-height --preview "eza -T -L 3 --icons --color=always {}" --preview-window=right:50%'
 export FZF_DEFAULT_OPTS="--layout=reverse --border=rounded --info=inline --bind 'ctrl-/:toggle-preview'"
 
-HISTSIZE=10000
-HISTDUP=erase
 SAVEHIST=$HISTSIZE
+HISTDUP=erase
+HISTSIZE=10000
 setopt appendhistory
 setopt sharehistory
 setopt extended_history
@@ -39,7 +34,6 @@ zshaddhistory() {
 alias ls="eza -l --icons --group-directories-first --no-user --no-time --no-permissions --no-filesize --color=always --git"
 alias l="eza -laB --icons --group-directories-first"
 alias cat="bat -pp"
-alias grep="rg"
 alias ..="cd ../"
 alias ...="cd ../../"
 alias ....="cd ../../../"
@@ -125,5 +119,6 @@ fi
 
 [ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"
 
-# bun completions
-[ -s "/home/mlorenc/.local/share/bun/_bun" ] && source "/home/mlorenc/.local/share/bun/_bun"
+autoload -Uz compinit && compinit
+autoload -Uz bashcompinit && bashcompinit
+complete -C '/usr/bin/aws_completer' aws
