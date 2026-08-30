@@ -8,9 +8,10 @@ export FZF_CTRL_T_OPTS='--no-height --preview "bat --color=always --style=number
 export FZF_ALT_C_OPTS='--no-height --preview "eza -T -L 3 --icons --color=always {}" --preview-window=right:50%'
 export FZF_DEFAULT_OPTS="--layout=reverse --border=rounded --info=inline --bind 'ctrl-/:toggle-preview'"
 
-SAVEHIST=$HISTSIZE
-HISTDUP=erase
+HISTFILE="$ZDOTDIR/.zsh_history"
 HISTSIZE=10000
+SAVEHIST=10000
+HISTDUP=erase
 setopt appendhistory
 setopt sharehistory
 setopt extended_history
@@ -97,6 +98,11 @@ elif command -v fzf &>/dev/null; then
     eval "$(fzf --zsh 2>/dev/null)"
 fi
 
+if command -v zoxide &>/dev/null; then
+    unalias zi 2>/dev/null
+    eval "$(zoxide init zsh)"
+fi
+
 (( ${+functions[compdef]} )) && compdef _cd cd
 
 bindkey -e
@@ -119,6 +125,5 @@ fi
 
 [ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"
 
-autoload -Uz compinit && compinit
 autoload -Uz bashcompinit && bashcompinit
 complete -C '/usr/bin/aws_completer' aws
