@@ -1,0 +1,53 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+
+_log_info() { echo "\033[0;34m[sysclean]\033[0m $*"; }
+
+if command -v brew >/dev/null 2>&1; then
+    _log_info "Cleaning Homebrew cache & old versions..."
+    brew cleanup --prune=all 2>/dev/null || true
+    brew autoremove 2>/dev/null || true
+fi
+
+_log_info "Emptying trash..."
+rm -rf "$HOME/.Trash/"*(N) 2>/dev/null || true
+
+_log_info "Cleaning miscellaneous macOS caches..."
+rm -rf "$HOME/Library/Caches/Homebrew/"*(N) 2>/dev/null || true
+if command -v qlmanage >/dev/null 2>&1; then
+    qlmanage -r cache >/dev/null 2>&1 || true
+fi
+
+_log_info "Cleaning Python, Node & dev caches..."
+if command -v uv >/dev/null 2>&1; then
+    uv cache prune 2>/dev/null || true
+fi
+if command -v pip >/dev/null 2>&1; then
+    pip cache purge 2>/dev/null || true
+fi
+if command -v bun >/dev/null 2>&1; then
+    bun pm cache rm 2>/dev/null || true
+fi
+if command -v npm >/dev/null 2>&1; then
+    npm cache clean --force 2>/dev/null || true
+fi
+if command -v yarn >/dev/null 2>&1; then
+    yarn cache clean 2>/dev/null || true
+fi
+
+_log_info "Pruning container engines..."
+if command -v podman >/dev/null 2>&1; then
+    podman system prune --force 2>/dev/null || true
+fi
+if command -v docker >/dev/null 2>&1; then
+    docker system prune -f 2>/dev/null || true
+fi
+
+_log_info "System is clean."
+
+if command -v duf >/dev/null 2>&1; then
+    _log_info "Current disk usage:"
+    duf / /System/Volumes/Data 2>/dev/null || duf /
+else
+    df -h /
+fi
