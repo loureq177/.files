@@ -7,7 +7,6 @@ if command -v brew >/dev/null 2>&1; then
     _log_info "Updating Homebrew packages and casks..."
     brew update
     brew upgrade
-    brew cleanup
 fi
 
 if command -v mas >/dev/null 2>&1; then
@@ -17,12 +16,27 @@ fi
 
 if [ -d "$HOME/.local/share/zinit" ] || command -v zinit >/dev/null 2>&1; then
     _log_info "Updating Zinit plugins..."
-    zsh -ic "zinit update --all && zinit self-update" || true
+    zsh -ic "zinit self-update && zinit update --all" || true
 fi
 
 if command -v tldr >/dev/null 2>&1; then
     _log_info "Updating tldr cache..."
     tldr --update || true
+fi
+
+if command -v uv >/dev/null 2>&1; then
+    _log_info "Updating uv tools..."
+    uv tool upgrade --all 2>/dev/null || true
+fi
+
+if command -v pipx >/dev/null 2>&1; then
+    _log_info "Updating pipx packages..."
+    pipx upgrade-all 2>/dev/null || true
+fi
+
+if command -v nvim >/dev/null 2>&1; then
+    _log_info "Updating Neovim plugins (LazyVim)..."
+    nvim --headless "+Lazy! sync" +qa || true
 fi
 
 if command -v softwareupdate >/dev/null 2>&1; then
