@@ -1,0 +1,4 @@
+# bat configuration
+# True GitHub Dark theme matching the dotfiles palette
+--theme="github-dark"
+--italic-text=always
