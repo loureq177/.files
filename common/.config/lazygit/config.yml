@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+# GitHub Dark Default theme, palette matches archlinux/.config/ui/ui.toml
+
+gui:
+  nerdFontsVersion: "3"
+  border: single
+  theme:
+    activeBorderColor:
+      - "#58a6ff"
+      - bold
+    inactiveBorderColor:
+      - "#30363d"
+    searchingActiveBorderColor:
+      - "#58a6ff"
+      - bold
+    optionsTextColor:
+      - "#58a6ff"
+    selectedLineBgColor:
+      - "#21262d"
+    inactiveViewSelectedLineBgColor:
+      - "#161b22"
+      - bold
+    cherryPickedCommitFgColor:
+      - "#58a6ff"
+    cherryPickedCommitBgColor:
+      - "#bc8cff"
+    markedBaseCommitFgColor:
+      - "#58a6ff"
+    markedBaseCommitBgColor:
+      - "#d29922"
+    unstagedChangesColor:
+      - "#f85149"
+    defaultFgColor:
+      - "#c9d1d9"
+
+git:
+  diffRenderers:
+    - command: delta --dark --paging=never --syntax-theme=github-dark --tabs=4 --true-color=always --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
