@@ -22,10 +22,10 @@
       "~/**": "allow"
     },
     "bash": {
-      // catch-all MUSI być pierwszy — dalsze reguły go nadpisują
+      // catch-all MUST be first — subsequent rules override it
       "*": "ask",
 
-      // git — bez push/reset/rebase, to zostaje na "ask"
+      // git — without push/reset/rebase, which remains on "ask"
       "git": "allow",
       "git status*": "allow",
       "git diff*": "allow",
@@ -38,12 +38,13 @@
       "git stash*": "allow",
       "git rev-parse*": "allow",
 
-      // ogólne odczyt/przegląd
+      // general read/inspection
       "ls": "allow",
       "pwd": "allow",
       "echo": "allow",
       "echo *": "allow",
       "find": "allow",
+      "sort": "allow",
       "find *": "allow",
       "grep": "allow",
       "grep *": "allow",
@@ -74,7 +75,7 @@
       "diff": "allow",
       "diff *": "allow",
 
-      // Arch — zapytania i diagnostyka, bez instalacji/upgrade'u
+      // Arch — queries and diagnostics, without install/upgrade
       "paru -q *": "allow",
       "pacman -q *": "allow",
       "pacman -Ss *": "allow",
