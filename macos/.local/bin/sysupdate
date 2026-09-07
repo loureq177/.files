@@ -1,7 +1,16 @@
 #!/usr/bin/env zsh
+# macOS system updater: Homebrew, Mac App Store, zinit, dev tools (uv/pipx/nvim), and OS updates.
 set -euo pipefail
 
 _log_info() { echo "\033[0;34m[sysupdate]\033[0m $*"; }
+
+step() {
+    local msg=$1 tool=$2
+    shift 2
+    command -v "$tool" >/dev/null 2>&1 || return 0
+    _log_info "$msg"
+    "$@" || true
+}
 
 if command -v brew >/dev/null 2>&1; then
     _log_info "Updating Homebrew packages and casks..."
@@ -9,20 +18,14 @@ if command -v brew >/dev/null 2>&1; then
     brew upgrade
 fi
 
-if command -v mas >/dev/null 2>&1; then
-    _log_info "Updating Mac App Store applications..."
-    mas upgrade || true
-fi
+step "Updating Mac App Store applications..." mas mas upgrade
 
 if [ -d "$HOME/.local/share/zinit" ] || command -v zinit >/dev/null 2>&1; then
     _log_info "Updating Zinit plugins..."
     zsh -ic "zinit self-update && zinit update --all" || true
 fi
 
-if command -v tldr >/dev/null 2>&1; then
-    _log_info "Updating tldr cache..."
-    tldr --update || true
-fi
+step "Updating tldr cache..." tldr tldr --update
 
 if command -v uv >/dev/null 2>&1; then
     _log_info "Updating uv tools..."
@@ -34,14 +37,8 @@ if command -v pipx >/dev/null 2>&1; then
     pipx upgrade-all 2>/dev/null || true
 fi
 
-if command -v nvim >/dev/null 2>&1; then
-    _log_info "Updating Neovim plugins (LazyVim)..."
-    nvim --headless "+Lazy! sync" +qa || true
-fi
+step "Updating Neovim plugins (LazyVim)..." nvim nvim --headless "+Lazy! sync" +qa
 
-if command -v softwareupdate >/dev/null 2>&1; then
-    _log_info "Checking macOS system updates..."
-    softwareupdate -l || true
-fi
+step "Checking macOS system updates..." softwareupdate softwareupdate -l
 
 _log_info "macOS update completed!"
