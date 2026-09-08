@@ -1,3 +1,4 @@
+typeset -U path
 [[ -d "$HOME/.config/herd-lite/bin" ]] && path=("$HOME/.config/herd-lite/bin" $path)
 [[ -d "${BUN_INSTALL}/bin" ]] && path=("${BUN_INSTALL}/bin" $path)
 
@@ -10,10 +11,11 @@ export FZF_ALT_C_OPTS='--no-height --preview "eza -T -L 3 --icons --color=always
 fzf_colors="${UI_FZF_THEME:-bg+:#21262d,bg:#0d1117,fg:#c9d1d9,hl:#58a6ff,fg+:#c9d1d9,hl+:#58a6ff,header:#58a6ff,info:#8b949e,pointer:#58a6ff,marker:#3fb950,prompt:#58a6ff,spinner:#58a6ff,border:#30363d}"
 export FZF_DEFAULT_OPTS="--layout=reverse --border=rounded --info=inline --bind 'ctrl-/:toggle-preview' --color=${fzf_colors}"
 
-HISTFILE="$ZDOTDIR/.zsh_history"
+HISTFILE="${ZSH_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/zsh}/history"
+[[ -d "${HISTFILE:h}" ]] || mkdir -p "${HISTFILE:h}"
+ZCOMP_DUMP="${ZSH_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/zsh}/.zcompdump"
 HISTSIZE=10000
 SAVEHIST=10000
-HISTDUP=erase
 setopt appendhistory
 setopt sharehistory
 setopt extended_history
@@ -57,23 +59,23 @@ if [[ ! -d "$ZINIT_HOME" ]]; then
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
-fpath=(~/.config/zsh/functions $fpath)
+fpath=("$ZDOTDIR/functions" $fpath)
 
 zinit light zsh-users/zsh-completions
 
 autoload -Uz compinit
 setopt extended_glob
-local -a zcompdump_stale=("$ZDOTDIR/.zcompdump"(#qN.mh+24))
+local -a zcompdump_stale=("$ZCOMP_DUMP"(#qN.mh+24))
 unsetopt extended_glob
 
 if (( ${#zcompdump_stale} )); then
-  compinit -d "$ZDOTDIR/.zcompdump"
+  compinit -d "$ZCOMP_DUMP"
 else
-  compinit -C -d "$ZDOTDIR/.zcompdump"
+  compinit -C -d "$ZCOMP_DUMP"
 fi
 
-if [[ -s "$ZDOTDIR/.zcompdump" && (! -s "$ZDOTDIR/.zcompdump.zwc" || "$ZDOTDIR/.zcompdump" -nt "$ZDOTDIR/.zcompdump.zwc") ]]; then
-  zcompile "$ZDOTDIR/.zcompdump"
+if [[ -s "$ZCOMP_DUMP" && (! -s "$ZCOMP_DUMP.zwc" || "$ZCOMP_DUMP" -nt "$ZCOMP_DUMP.zwc") ]]; then
+  zcompile "$ZCOMP_DUMP"
 fi
 
 [[ -s "${BUN_INSTALL}/_bun" ]] && source "${BUN_INSTALL}/_bun"
@@ -94,9 +96,7 @@ zinit light zdharma-continuum/fast-syntax-highlighting
 
 eval "$(starship init zsh)"
 
-if [[ -f "$ZDOTDIR/.fzf.zsh" ]]; then
-    source "$ZDOTDIR/.fzf.zsh"
-elif command -v fzf &>/dev/null; then
+if command -v fzf &>/dev/null; then
     eval "$(fzf --zsh 2>/dev/null)"
 fi
 
@@ -104,8 +104,6 @@ if command -v zoxide &>/dev/null; then
     unalias zi 2>/dev/null
     eval "$(zoxide init zsh)"
 fi
-
-(( ${+functions[compdef]} )) && compdef _cd cd
 
 bindkey -e
 bindkey '^p' history-search-backward
@@ -122,10 +120,10 @@ zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
 
 if [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
-    exec Hyprland
+    command -v Hyprland >/dev/null 2>&1 && exec Hyprland
 fi
 
 [ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"
 
 autoload -Uz bashcompinit && bashcompinit
-complete -C '/usr/bin/aws_completer' aws
+command -v aws >/dev/null 2>&1 && complete -C '/usr/bin/aws_completer' aws

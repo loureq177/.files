@@ -4,7 +4,9 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
-HISTFILE="$ZDOTDIR/.zsh_history"
+# Keep live shell state outside the stowed repo dir (gitignored but pollutes stow).
+export ZSH_STATE_DIR="${XDG_STATE_HOME}/zsh"
+HISTFILE="$ZSH_STATE_DIR/history"
 
 export CARGO_HOME="${XDG_DATA_HOME}/cargo"
 export RUSTUP_HOME="${XDG_DATA_HOME}/rustup"
