@@ -10,6 +10,40 @@ run_if() {
     "$@" </dev/null 2>/dev/null || true
 }
 
+avail_bytes() {
+    # Available bytes on /. APFS shares space across volumes, so only track /.
+    df -k / 2>/dev/null | awk 'NR==2 {print $4 * 1024}'
+}
+
+human_bytes() {
+    local bytes="${1:-0}"
+    if command -v numfmt >/dev/null 2>&1 && numfmt --to=iec-i --suffix=B -- 1 >/dev/null 2>&1; then
+        numfmt --to=iec-i --suffix=B -- "$bytes" 2>/dev/null || echo "$bytes B"
+    else
+        awk -v b="$bytes" 'BEGIN {
+            if (b >= 1073741824) printf "%.2f GiB\n", b / 1073741824;
+            else if (b >= 1048576) printf "%.2f MiB\n", b / 1048576;
+            else if (b >= 1024) printf "%.2f KiB\n", b / 1024;
+            else printf "%d B\n", b;
+        }'
+    fi
+}
+
+print_total() {
+    # Prominent final summary. No ui.sh on macOS, so use standard bold green.
+    local freed_h="$1"
+    local green bold reset
+    green="$(printf '\033[1;32m')"
+    bold=""
+    reset="$(printf '\033[0m')"
+    echo ""
+    echo "${green}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${reset}"
+    echo "${bold}${green}  Total reclaimed space: ${freed_h}${reset}"
+    echo "${green}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${reset}"
+}
+
+AVAIL_BEFORE=$(avail_bytes)
+
 if command -v brew >/dev/null 2>&1; then
     _log_info "Cleaning Homebrew cache & old versions..."
     brew cleanup --prune=all 2>/dev/null || true
@@ -30,15 +64,13 @@ run_if bun bun pm cache rm
 run_if npm npm cache clean --force
 run_if yarn yarn cache clean
 
-_log_info "Pruning container engines..."
+_log_info "Pruning container engines (per-engine details above)..."
 run_if podman podman system prune --force
 run_if docker docker system prune -f
 
 _log_info "System is clean."
 
-if command -v duf >/dev/null 2>&1; then
-    _log_info "Current disk usage:"
-    duf / /System/Volumes/Data 2>/dev/null || duf /
-else
-    df -h /
-fi
+AVAIL_AFTER=$(avail_bytes)
+FREED_BYTES=$((AVAIL_AFTER - AVAIL_BEFORE))
+if [ "$FREED_BYTES" -lt 0 ]; then FREED_BYTES=0; fi
+print_total "$(human_bytes "$FREED_BYTES")"
