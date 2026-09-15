@@ -27,14 +27,18 @@ fi
 
 [ -f "$INIFILE" ] || { echo "firefox-apply: $INIFILE not found"; exit 1; }
 
+# Precedence: [Install] Default= (authoritative), then the legacy per-profile
+# Default=1 flag, then the first [Profile] section. The old fallback kept
+# overwriting on every Path= while default_path was still empty (the [Install]
+# section is not always last), so it ended up picking the last profile.
 PROFILE="$(awk -F= '
-    /^\[Install/ { install_section=1; next }
-    /^\[/        { install_section=0 }
-    install_section && /^Default=/ { default_path=$2 }
-    /^\[Profile/   { profile_section=1; next }
-    /^\[/          { profile_section=0 }
-    profile_section && /^Path=/ { if (default_path == "" || first_path == "") first_path=$2 }
-    END { print (default_path != "" ? default_path : first_path) }
+    /^\[Install/  { install_section=1; profile_section=0; next }
+    /^\[Profile/  { profile_section=1; install_section=0; next }
+    /^\[/         { install_section=0; profile_section=0; next }
+    install_section && /^Default=/ { default_path=$2; next }
+    profile_section && /^Path=/    { if (first_path == "") first_path=$2; cur_path=$2; next }
+    profile_section && /^Default=/ { if ($2 + 0 == 1) flagged_default=cur_path; next }
+    END { print (default_path != "" ? default_path : (flagged_default != "" ? flagged_default : first_path)) }
 ' "$INIFILE")"
 [ -n "$PROFILE" ] || { echo "firefox-apply: no profile found in profiles.ini"; exit 1; }
 
