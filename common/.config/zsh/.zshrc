@@ -59,14 +59,18 @@ if [[ ! -d "$ZINIT_HOME" ]]; then
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
-fpath=("$ZDOTDIR/functions" $fpath)
-
 zinit light zsh-users/zsh-completions
 
 autoload -Uz compinit
+# The (#q...) glob qualifier needs extended_glob. Enable it only for this
+# expansion and restore the previous state, instead of unsetting it outright
+# (which would silently drop a setting the user enabled).
+local -a zcompdump_stale
+local -i had_extended_glob=0
+[[ -o extended_glob ]] && had_extended_glob=1
 setopt extended_glob
-local -a zcompdump_stale=("$ZCOMP_DUMP"(#qN.mh+24))
-unsetopt extended_glob
+zcompdump_stale=("$ZCOMP_DUMP"(#qN.mh+24))
+(( had_extended_glob )) || unsetopt extended_glob
 
 if (( ${#zcompdump_stale} )); then
   compinit -d "$ZCOMP_DUMP"
