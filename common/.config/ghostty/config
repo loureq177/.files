@@ -25,6 +25,11 @@ window-inherit-working-directory = false
 tab-inherit-working-directory = false
 window-inherit-font-size = true
 window-padding-x = 8
+window-padding-y = 8
+window-padding-balance = true
+background-opacity = 0.95
+background-blur-radius = 20
+minimum-contrast = 1.1
 
 # Universal clipboard & selection
 keybind = shift+insert=paste_from_clipboard
