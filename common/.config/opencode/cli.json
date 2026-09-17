@@ -21,7 +21,7 @@
   "animations": true,
   "tabs": {
     "enabled": true,
-    "layout": "vertical",
+    "layout": "horizontal",
     "indicators": "status",
     "scope": "cwd"
   },
@@ -29,6 +29,8 @@
     "paste": "full"
   },
   "attention": {
-    "volume": 1
+    "volume": 1,
+    "notifications": true,
+    "sound": true
   }
 }
