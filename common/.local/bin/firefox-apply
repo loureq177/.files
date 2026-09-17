@@ -27,23 +27,69 @@ fi
 
 [ -f "$INIFILE" ] || { echo "firefox-apply: $INIFILE not found"; exit 1; }
 
+if [ $# -gt 0 ] && [ "$1" = "--extensions" ]; then
+    [ -f "$SRC/extensions.txt" ] || { echo "firefox-apply: $SRC/extensions.txt not found" >&2; exit 1; }
+    cat "$SRC/extensions.txt"
+    exit 0
+fi
+[ $# -eq 0 ] || usage
+
+[ -f "$SRC/user.js" ] || { echo "firefox-apply: $SRC/user.js not found" >&2; exit 1; }
+
+[ -f "$INIFILE" ] || { echo "firefox-apply: $INIFILE not found" >&2; exit 1; }
+
 # Precedence: [Install] Default= (authoritative), then the legacy per-profile
 # Default=1 flag, then the first [Profile] section. The old fallback kept
 # overwriting on every Path= while default_path was still empty (the [Install]
 # section is not always last), so it ended up picking the last profile.
-PROFILE="$(awk -F= '
-    /^\[Install/  { install_section=1; profile_section=0; next }
-    /^\[Profile/  { profile_section=1; install_section=0; next }
-    /^\[/         { install_section=0; profile_section=0; next }
-    install_section && /^Default=/ { default_path=$2; next }
-    profile_section && /^Path=/    { if (first_path == "") first_path=$2; cur_path=$2; next }
-    profile_section && /^Default=/ { if ($2 + 0 == 1) flagged_default=cur_path; next }
-    END { print (default_path != "" ? default_path : (flagged_default != "" ? flagged_default : first_path)) }
+#
+# Path and IsRelative are buffered per section because key order inside a
+# section is not guaranteed (IsRelative may follow Path or Default=). Values
+# are read past the first '=' so '=' inside a value is preserved.
+SEL="$(awk '
+    function val() { return substr($0, index($0, "=") + 1) }
+    function save() {
+        if (p_path == "") return
+        if (first_path == "") { first_path = p_path; first_rel = p_rel }
+        if (p_def) { flagged_path = p_path; flagged_rel = p_rel }
+    }
+    /^\[Install/  { save(); section = "install"; next }
+    /^\[Profile/  { save(); section = "profile"; p_path = ""; p_rel = "1"; p_def = 0; next }
+    /^\[/         { save(); section = ""; next }
+    section == "install" && /^Default=/ { install_default = val(); next }
+    section == "profile" && /^Path=/ { p_path = val(); next }
+    section == "profile" && /^IsRelative=/ { p_rel = val(); next }
+    section == "profile" && /^Default=/ { if (val() + 0 == 1) p_def = 1; next }
+    END {
+        save()
+        if (install_default != "") { print "1\t" install_default }
+        else if (flagged_path != "") { print flagged_rel "\t" flagged_path }
+        else { print first_rel "\t" first_path }
+    }
 ' "$INIFILE")"
-[ -n "$PROFILE" ] || { echo "firefox-apply: no profile found in profiles.ini"; exit 1; }
+ISREL="${SEL%%$'\t'*}"
+PROFILE="${SEL#*$'\t'}"
+[ -n "$PROFILE" ] || { echo "firefox-apply: no profile found in profiles.ini" >&2; exit 1; }
 
-PROFILE_DIR="$(readlink -f "${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox/$PROFILE")"
-[ -d "$PROFILE_DIR" ] || { echo "firefox-apply: profile dir not found: $PROFILE_DIR"; exit 1; }
+if [ "$ISREL" = "0" ]; then
+    # Absolute on-disk path: must stay absolute, never joined.
+    case "$PROFILE" in
+        /*) PROFILE_CANDIDATE="$PROFILE" ;;
+        *) echo "firefox-apply: IsRelative=0 but Path is not absolute: $PROFILE" >&2; exit 1 ;;
+    esac
+else
+    # Relative to the Firefox dir: a single directory name, never a
+    # path escape (absolute path or '..').
+    case "$PROFILE" in
+        ""|*/*|*..*) echo "firefox-apply: unsafe relative profile path: $PROFILE" >&2; exit 1 ;;
+    esac
+    PROFILE_CANDIDATE="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox/$PROFILE"
+fi
+
+# readlink -f exits non-zero when leading components are missing; under
+# 'set -e' that used to kill the script silently. Fail loudly instead.
+PROFILE_DIR="$(readlink -f "$PROFILE_CANDIDATE")" || { echo "firefox-apply: cannot resolve profile dir: $PROFILE_CANDIDATE" >&2; exit 1; }
+[ -d "$PROFILE_DIR" ] || { echo "firefox-apply: profile dir not found: $PROFILE_DIR" >&2; exit 1; }
 
 install -m 600 "$SRC/user.js" "$PROFILE_DIR/user.js"
 echo "[OK] user.js -> $PROFILE_DIR"
