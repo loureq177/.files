@@ -13,10 +13,10 @@ find_position = { fg = "#bc8cff", bg = "reset", bold = true }
 symlink_target = { fg = "#8b949e", italic = true }
 
 # Marker
-marker_copied   = { fg = "#3fb950", bg = "#3fb950" }
-marker_cut      = { fg = "#f85149", bg = "#f85149" }
-marker_marked   = { fg = "#58a6ff", bg = "#58a6ff" }
-marker_selected = { fg = "#d29922", bg = "#d29922" }
+marker_copied   = { fg = "#0d1117", bg = "#3fb950" }
+marker_cut      = { fg = "#0d1117", bg = "#f85149" }
+marker_marked   = { fg = "#0d1117", bg = "#58a6ff" }
+marker_selected = { fg = "#0d1117", bg = "#d29922" }
 marker_symbol   = "│"
 
 # Count
