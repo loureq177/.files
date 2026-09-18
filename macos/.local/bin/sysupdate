@@ -1,44 +1,101 @@
 #!/usr/bin/env zsh
 # macOS system updater: Homebrew, Mac App Store, zinit, dev tools (uv/pipx/nvim), and OS updates.
+# Usage: sysupdate [--only=brew,mas,zinit,tldr,uv,pipx,nvim,os]
+#   --only  runs a comma-separated subset (e.g. --only=brew,uv)
 set -euo pipefail
 
-_log_info() { echo "\033[0;34m[sysupdate]\033[0m $*"; }
+export HOMEBREW_NO_ENV_HINTS=1
 
-step() {
-    local msg=$1 tool=$2
-    shift 2
-    command -v "$tool" >/dev/null 2>&1 || return 0
-    _log_info "$msg"
-    "$@" || true
+ONLY="all"
+for arg in "$@"; do
+    case "$arg" in
+        --only=*) ONLY="${arg#--only=}" ;;
+        -h|--help)
+            echo "Usage: sysupdate [--only=brew,mas,zinit,tldr,uv,pipx,nvim,os]"
+            exit 0
+            ;;
+    esac
+done
+
+_wanted() {
+    [[ "$ONLY" == "all" ]] && return 0
+    [[ ",$ONLY," == *",$1,"* ]]
 }
 
-if command -v brew >/dev/null 2>&1; then
+_log_info() { echo "\033[0;34m[sysupdate]\033[0m $*"; }
+_timed() { # _timed <label> <cmd...>: logs elapsed seconds per step so 1m4s is attributable
+    local label=$1; shift
+    local start=$SECONDS
+    "$@" || true
+    _log_info "$label (took $((SECONDS - start))s)"
+}
+
+_brew_step() {
+    command -v brew >/dev/null 2>&1 || return 0
     _log_info "Updating Homebrew packages and casks..."
-    brew update
-    brew upgrade
+    local start=$SECONDS
+    brew update || true
+    # Already updated above; don't auto-update a second time inside upgrade.
+    HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --quiet || true
+    _log_info "Homebrew done (took $((SECONDS - start))s)"
+}
+
+_mas_step() {
+    command -v mas >/dev/null 2>&1 || return 0
+    # `mas upgrade` with nothing outdated still costs a network round-trip.
+    if mas outdated 2>/dev/null | grep -q .; then
+        _timed "Mac App Store applications" mas upgrade || true
+    else
+        _log_info "Mac App Store: nothing outdated, skipping."
+    fi
+}
+
+_zinit_step() {
+    { [ -d "$HOME/.local/share/zinit" ] || command -v zinit >/dev/null 2>&1; } || return 0
+    # -i loads the interactive env zinit needs (sources the full zshrc).
+    _timed "Zinit plugins" zsh -ic "zinit self-update && zinit update --all" || true
+}
+
+_dev_step() { # tldr/uv/pipx are independent: run together, not sequentially
+    local -a pids; pids=()
+    if _wanted tldr && command -v tldr >/dev/null 2>&1; then
+        tldr --update & pids+=($!)
+    fi
+    if _wanted uv && command -v uv >/dev/null 2>&1; then
+        uv tool upgrade --all 2>/dev/null & pids+=($!)
+    fi
+    if _wanted pipx && command -v pipx >/dev/null 2>&1; then
+        pipx upgrade-all 2>/dev/null & pids+=($!)
+    fi
+    if (( ${#pids[@]} )); then
+        for pid in "${pids[@]}"; do wait "$pid" || true; done
+    fi
+    return 0
+}
+
+_nvim_step() {
+    command -v nvim >/dev/null 2>&1 || return 0
+    _timed "Neovim plugins (LazyVim)" nvim --headless "+Lazy! sync" +qa || true
+}
+
+TOTAL_START=$SECONDS
+
+# brew is the long pole; overlap everything else with it.
+typeset -a _pids; _pids=()
+if _wanted brew; then _brew_step & _pids+=($!); fi
+if _wanted mas; then _mas_step & _pids+=($!); fi
+if _wanted zinit; then _zinit_step & _pids+=($!); fi
+_dev_step & _pids+=($!)
+if _wanted nvim; then _nvim_step & _pids+=($!); fi
+if (( ${#_pids[@]} )); then
+    for pid in "${_pids[@]}"; do wait "$pid" || true; done
 fi
 
-step "Updating Mac App Store applications..." mas mas upgrade
-
-if [ -d "$HOME/.local/share/zinit" ] || command -v zinit >/dev/null 2>&1; then
-    _log_info "Updating Zinit plugins..."
-    zsh -ic "zinit self-update && zinit update --all" || true
+if _wanted os; then
+    # softwareupdate -l is 10-30s of Apple server wait on its own.
+    if command -v softwareupdate >/dev/null 2>&1; then
+        _timed "macOS system updates (list only)" softwareupdate -l || true
+    fi
 fi
 
-step "Updating tldr cache..." tldr tldr --update
-
-if command -v uv >/dev/null 2>&1; then
-    _log_info "Updating uv tools..."
-    uv tool upgrade --all 2>/dev/null || true
-fi
-
-if command -v pipx >/dev/null 2>&1; then
-    _log_info "Updating pipx packages..."
-    pipx upgrade-all 2>/dev/null || true
-fi
-
-step "Updating Neovim plugins (LazyVim)..." nvim nvim --headless "+Lazy! sync" +qa
-
-step "Checking macOS system updates..." softwareupdate softwareupdate -l
-
-_log_info "macOS update completed!"
+_log_info "macOS update completed in $((SECONDS - TOTAL_START))s!"
