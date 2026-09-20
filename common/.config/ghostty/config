@@ -1,14 +1,12 @@
-# Machine-local symlink (XDG_STATE_HOME), flipped by power-save.sh. Never point
-# this at a stowed file that power-save.sh edits: ~/.config/ghostty is a stow
-# link into the dotfiles repo, so in-place edits there land in git.
-custom-shader = ~/.local/state/ghostty/active-shader.glsl
-custom-shader-animation = true
+config-file = ?arch.conf
 theme = GitHub Dark Default
 
 font-family = JetBrainsMono Nerd Font Mono
 font-family = Noto Sans CJK JP
 font-size = 12
-font-feature = -calc
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
 
 cursor-style = block
 cursor-style-blink = false
