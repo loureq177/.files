@@ -6,7 +6,7 @@ local logo = {
 	"██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║",
 	"██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║",
 	"██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║",
-	"╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝    ╚═╝",
+	"╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝",
 }
 
 local katakana_tbl = vim.fn.split(
@@ -30,10 +30,10 @@ local glitch_frames = {
 }
 
 local function get_noise_char(depth)
-	if depth < 0.3 then
-		return noise1[math.random(#noise1)]
-	elseif depth < 0.6 then
+	if depth < 0.4 then
 		return katakana_tbl[math.random(#katakana_tbl)]
+	elseif depth < 0.7 then
+		return math.random() > 0.5 and katakana_tbl[math.random(#katakana_tbl)] or noise1[math.random(#noise1)]
 	else
 		return noise2[math.random(#noise2)]
 	end
@@ -78,16 +78,19 @@ local function rotate(chars, offset)
 end
 
 function M.play()
-	if vim.fn.argc() ~= 0 or vim.api.nvim_buf_get_name(0) ~= "" then
+	local argc = vim.fn.argc()
+	local is_dir = argc == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1
+	if (argc == 0 and vim.api.nvim_buf_get_name(0) ~= "") or (argc ~= 0 and not is_dir) then
 		return
 	end
 
-	local dash_win, logo_bufline
+	local dash_win, dash_buf, logo_bufline
 
 	for _, win in ipairs(vim.api.nvim_list_wins()) do
 		local buf = vim.api.nvim_win_get_buf(win)
 		if vim.bo[buf].filetype == "snacks_dashboard" then
 			dash_win = win
+			dash_buf = buf
 			local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
 			for i, line in ipairs(lines) do
 				if line:find("███") then
@@ -99,17 +102,24 @@ function M.play()
 		end
 	end
 
-	if not dash_win or not logo_bufline then
+	if not dash_win or not dash_buf or not logo_bufline then
 		return
 	end
 
 	local spos = vim.fn.screenpos(dash_win, logo_bufline, 1)
 	if spos.row == 0 then
-		return
+		vim.cmd("redraw")
+		spos = vim.fn.screenpos(dash_win, logo_bufline, 1)
+		if spos.row == 0 then
+			return
+		end
 	end
 
 	local w = vim.fn.strdisplaywidth(logo[1])
 	local win_width = vim.api.nvim_win_get_width(dash_win)
+	if win_width < w then
+		return
+	end
 	local win_pos = vim.api.nvim_win_get_position(dash_win)
 	local col = win_pos[2] + math.floor((win_width - w) / 2)
 
@@ -118,6 +128,13 @@ function M.play()
 
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.bo[buf].bufhidden = "wipe"
+	vim.bo[buf].modifiable = true
+
+	local initial_lines = {}
+	for i, chars in ipairs(parsed_logo) do
+		initial_lines[i] = scramble(chars, 0)
+	end
+	vim.api.nvim_buf_set_lines(buf, 0, -1, false, initial_lines)
 
 	local win = vim.api.nvim_open_win(buf, false, {
 		relative = "editor",
@@ -135,40 +152,48 @@ function M.play()
 		hl_names[i] = "MatrixAnimFg" .. i
 		vim.api.nvim_set_hl(0, hl_names[i], { fg = fg, bold = i > 3 })
 	end
-	vim.wo[win].winhighlight = "Normal:MatrixAnimFg3"
+
+	local last_hl_idx = 1
+	vim.wo[win].winhighlight = "Normal:" .. hl_names[last_hl_idx]
 
 	local frame, total = 0, 50
 	local timer = vim.uv.new_timer()
 	local glitch_timer = nil
-	local autocmd_id
+	local autocmd_group = nil
 
-	-- NOTE: this is the single source of truth for teardown.
-	-- Removed the redundant `nvim_get_current_win() ~= dash_win` checks
-	-- that were duplicated inside both timer callbacks below: WinLeave /
-	-- CursorMoved / WinEnter already fire (and cleanup) in the same tick
-	-- before those checks could ever be true, so they were dead code.
 	local function cleanup()
 		stop_timer(timer)
 		stop_timer(glitch_timer)
 		if vim.api.nvim_win_is_valid(win) then
 			vim.api.nvim_win_close(win, true)
 		end
-		if autocmd_id then
-			pcall(vim.api.nvim_del_autocmd, autocmd_id)
-			autocmd_id = nil
+		if autocmd_group then
+			pcall(vim.api.nvim_del_augroup_by_id, autocmd_group)
+			autocmd_group = nil
 		end
 	end
 
-	local group = vim.api.nvim_create_augroup("MatrixIntroTeardown", { clear = true })
-	autocmd_id = vim.api.nvim_create_autocmd(
-		{ "BufLeave", "WinLeave", "WinEnter", "CursorMoved", "InsertEnter", "CmdlineEnter" },
-		{ group = group, callback = cleanup }
-	)
+	autocmd_group = vim.api.nvim_create_augroup("MatrixIntroTeardown", { clear = true })
+	vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+		group = autocmd_group,
+		buffer = dash_buf,
+		callback = cleanup,
+	})
+	vim.api.nvim_create_autocmd({ "InsertEnter", "CmdlineEnter", "VimResized" }, {
+		group = autocmd_group,
+		callback = cleanup,
+	})
+	vim.api.nvim_create_autocmd("CursorMoved", {
+		group = autocmd_group,
+		callback = function()
+			if vim.api.nvim_get_current_win() == dash_win then
+				cleanup()
+			end
+		end,
+	})
 
 	local function set_lines(lines)
-		vim.bo[buf].modifiable = true
 		vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-		vim.bo[buf].modifiable = false
 	end
 
 	local function start_glitch_phase()
@@ -180,6 +205,11 @@ function M.play()
 			vim.schedule_wrap(function()
 				if not vim.api.nvim_buf_is_valid(buf) then
 					stop_timer(glitch_timer)
+					return
+				end
+
+				if not vim.api.nvim_win_is_valid(dash_win) or vim.api.nvim_win_get_buf(dash_win) ~= dash_buf then
+					cleanup()
 					return
 				end
 
@@ -208,10 +238,10 @@ function M.play()
 	end
 
 	timer:start(
-		0,
+		25,
 		25,
 		vim.schedule_wrap(function()
-			if vim.api.nvim_get_current_win() ~= dash_win then
+			if not vim.api.nvim_win_is_valid(dash_win) or vim.api.nvim_win_get_buf(dash_win) ~= dash_buf then
 				cleanup()
 				return
 			end
@@ -222,8 +252,7 @@ function M.play()
 				return
 			end
 
-			local p = frame / total
-			local progress = p < 0.5 and 2 * p * p or -1 + (4 - 2 * p) * p
+			local progress = frame / total
 
 			local lines = {}
 			for i, chars in ipairs(parsed_logo) do
@@ -232,7 +261,10 @@ function M.play()
 			set_lines(lines)
 
 			local hl_idx = math.min(5, math.floor(progress * 5) + 1)
-			vim.wo[win].winhighlight = "Normal:" .. hl_names[hl_idx]
+			if hl_idx ~= last_hl_idx then
+				vim.wo[win].winhighlight = "Normal:" .. hl_names[hl_idx]
+				last_hl_idx = hl_idx
+			end
 
 			if frame >= total then
 				stop_timer(timer)

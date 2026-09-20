@@ -21,7 +21,8 @@ export KERAS_HOME="${XDG_CONFIG_HOME}/keras"
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=${XDG_CONFIG_HOME}/java"
 [[ -n "$XDG_RUNTIME_DIR" ]] && export PULSE_COOKIE="${XDG_RUNTIME_DIR}/pulse-cookie"
 
-export PATH="$HOME/.local/bin:${CARGO_HOME}/bin:${BUN_INSTALL}/bin:$PATH"
+export GOPATH="${XDG_DATA_HOME}/go"
+export PATH="$HOME/.local/bin:${CARGO_HOME}/bin:${GOPATH}/bin:${BUN_INSTALL}/bin:$PATH"
 
 export EDITOR='nvim'
 export VISUAL='nvim'
@@ -37,7 +38,6 @@ fi
 export NSS_DEFAULT_DB_DIR="${XDG_DATA_HOME}/pki/nssdb"
 export MATLAB_USERDIR="${XDG_CONFIG_HOME}/matlab"
 
-export GOPATH="${XDG_DATA_HOME}/go"
 export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
 
 
