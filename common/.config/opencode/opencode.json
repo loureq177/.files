@@ -10,7 +10,7 @@
       "extensions": [".py", ".pyi"]
     },
     "qmlls": {
-      "command": ["qmlls6", "-E", "-I", "/usr/lib/qt6/qml"],
+      "command": ["qmlls6", "-E"],
       "extensions": [".qml", ".qmljs"]
     }
   },

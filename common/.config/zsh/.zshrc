@@ -46,10 +46,17 @@ alias .....="cd ../../../../"
 alias ......="cd ../../../../../"
 
 alias -s {txt,md,json,yaml,yml,toml,conf,ini,cfg,log,env,bash,zsh,lua,py,rb,js,ts,jsx,tsx,c,h,cpp,hpp,go,rs,tex,css,scss,sass,gitignore,editorconfig,xml,sql,svelte,vue}=nvim
-alias -s html='firefox'
-alias -s {pdf,PDF}=firefox
-alias -s {png,jpg,jpeg,webp,gif,bmp,svg}=xdg-open
-alias -s {mp4,mov,avi,mkv,webm,MP4,MOV}=xdg-open
+if [[ "${OSTYPE:-}" == darwin* ]]; then
+    alias -s html='open'
+    alias -s {pdf,PDF}=open
+    alias -s {png,jpg,jpeg,webp,gif,bmp,svg}=open
+    alias -s {mp4,mov,avi,mkv,webm,MP4,MOV}=open
+else
+    alias -s html='firefox'
+    alias -s {pdf,PDF}=firefox
+    alias -s {png,jpg,jpeg,webp,gif,bmp,svg}=xdg-open
+    alias -s {mp4,mov,avi,mkv,webm,MP4,MOV}=xdg-open
+fi
 alias -s {zip,rar,7z,tar,gz,xz,bz2,iso}=yazi
 
 ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
@@ -123,11 +130,11 @@ function __tab_complete_dispatch() {
 zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
 
-if [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
+if [[ "${OSTYPE:-}" != darwin* ]] && [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
     command -v Hyprland >/dev/null 2>&1 && exec Hyprland
 fi
 
 [ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"
 
 autoload -Uz bashcompinit && bashcompinit
-command -v aws >/dev/null 2>&1 && complete -C '/usr/bin/aws_completer' aws
+command -v aws >/dev/null 2>&1 && [ -x '/usr/bin/aws_completer' ] && complete -C '/usr/bin/aws_completer' aws
