@@ -5,7 +5,8 @@
     "mode": "system"
   },
   "scroll": {
-    "speed": 1
+    "speed": 1,
+    "acceleration": true
   },
   "diffs": {
     "wrap": "none"
@@ -16,14 +17,18 @@
     "thinking": "hide",
     "terminal": true,
     "markdown": "rendered",
-    "grouping": "auto"
+    "grouping": "auto",
+    "verbosity": "high",
+    "tps": true,
+    "new_location": "launch",
+    "permissions": "prompt"
   },
   "animations": true,
   "tabs": {
     "enabled": true,
-    "layout": "horizontal",
+    "layout": "vertical",
     "indicators": "status",
-    "scope": "cwd"
+    "scope": "global"
   },
   "prompt": {
     "paste": "full"
