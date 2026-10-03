@@ -26,7 +26,6 @@ local glitch_frames = {
 	{ row = 3, offset = -1 },
 	{ row = 2, offset = 3 },
 	{ row = 4, offset = -2 },
-	{ row = 0, offset = 1 },
 }
 
 local function get_noise_char(depth)

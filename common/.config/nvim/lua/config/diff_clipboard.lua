@@ -3,15 +3,14 @@ local M = {}
 M.compare_with_clipboard = function()
 	local ft = vim.bo.filetype or ""
 
-	vim.cmd("vsplit")
-	vim.cmd("enew")
-
 	local clipboard = vim.fn.getreg("+")
 	if clipboard == "" then
 		vim.notify("Clipboard is empty!", vim.log.levels.WARN)
-		vim.cmd("close")
 		return
 	end
+
+	vim.cmd("vsplit")
+	vim.cmd("enew")
 
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(clipboard, "\n", { plain = true }))
 

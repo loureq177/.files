@@ -6,7 +6,7 @@
   },
   "scroll": {
     "speed": 1,
-    "acceleration": true
+    "acceleration": false
   },
   "diffs": {
     "wrap": "none"

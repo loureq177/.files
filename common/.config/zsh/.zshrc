@@ -60,9 +60,10 @@ fi
 alias -s {zip,rar,7z,tar,gz,xz,bz2,iso}=yazi
 
 ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
+ZINIT_PIN="v3.17.0"
 if [[ ! -d "$ZINIT_HOME" ]]; then
   mkdir -p "$(dirname "$ZINIT_HOME")"
-  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+  git clone --depth 1 --branch "$ZINIT_PIN" https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
@@ -105,7 +106,9 @@ zinit light zsh-users/zsh-autosuggestions
 zinit ice wait lucid
 zinit light zdharma-continuum/fast-syntax-highlighting
 
-eval "$(starship init zsh)"
+if command -v starship &>/dev/null; then
+  eval "$(starship init zsh)"
+fi
 
 if command -v fzf &>/dev/null; then
     eval "$(fzf --zsh 2>/dev/null)"
