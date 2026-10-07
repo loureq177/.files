@@ -1,0 +1,4 @@
+{
+  "hostname": "127.0.0.1",
+  "password": "CHANGE_ME_GENERATE_WITH_openssl_rand_-hex_32"
+}
