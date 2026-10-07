@@ -1,0 +1,7 @@
+# ~/.config/zsh/.zshrc.local
+# Machine-specific shell overrides. Gitignored and stow-ignored.
+# Copy to ~/.config/zsh/.zshrc.local to use.
+
+# export SECRET_TOKEN="..."
+# export WORK_PROJECT="$HOME/Projects/work"
+# alias work="cd $WORK_PROJECT"
