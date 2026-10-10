@@ -1,6 +1,7 @@
 brew "bat"
 brew "bats-core"
 brew "btop"
+brew "buf"
 brew "composer"
 brew "coreutils"
 brew "dua-cli"

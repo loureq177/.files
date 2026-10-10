@@ -60,10 +60,9 @@ fi
 alias -s {zip,rar,7z,tar,gz,xz,bz2,iso}=yazi
 
 ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
-ZINIT_PIN="v3.17.0"
 if [[ ! -d "$ZINIT_HOME" ]]; then
   mkdir -p "$(dirname "$ZINIT_HOME")"
-  git clone --depth 1 --branch "$ZINIT_PIN" https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+  git clone --depth 1 https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
@@ -134,7 +133,7 @@ zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
 
 if [[ "${OSTYPE:-}" != darwin* ]] && [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
-    command -v Hyprland >/dev/null 2>&1 && exec Hyprland
+    command -v start-hyprland >/dev/null 2>&1 && exec start-hyprland
 fi
 
 [ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"

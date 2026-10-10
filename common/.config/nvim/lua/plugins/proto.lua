@@ -3,7 +3,7 @@ return {
 		"neovim/nvim-lspconfig",
 		opts = {
 			servers = {
-				bufls = {},
+				buf_ls = { mason = false },
 			},
 		},
 	},
