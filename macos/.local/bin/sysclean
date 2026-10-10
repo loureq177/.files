@@ -32,13 +32,12 @@ human_bytes() {
 print_total() {
     # Prominent final summary. No ui.sh on macOS, so use standard bold green.
     local freed_h="$1"
-    local green bold reset
+    local green reset
     green="$(printf '\033[1;32m')"
-    bold=""
     reset="$(printf '\033[0m')"
     echo ""
     echo "${green}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${reset}"
-    echo "${bold}${green}  Total reclaimed space: ${freed_h}${reset}"
+    echo "${green}  Total reclaimed space: ${freed_h}${reset}"
     echo "${green}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${reset}"
 }
 
@@ -64,7 +63,7 @@ run_if bun bun pm cache rm
 run_if npm npm cache clean --force
 run_if yarn yarn cache clean
 
-_log_info "Pruning container engines (per-engine details above)..."
+_log_info "Pruning container engines..."
 run_if podman podman system prune --force
 run_if docker docker system prune -f
 
