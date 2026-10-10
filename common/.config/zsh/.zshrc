@@ -69,9 +69,6 @@ source "${ZINIT_HOME}/zinit.zsh"
 zinit light zsh-users/zsh-completions
 
 autoload -Uz compinit
-# The (#q...) glob qualifier needs extended_glob. Enable it only for this
-# expansion and restore the previous state, instead of unsetting it outright
-# (which would silently drop a setting the user enabled).
 local -a zcompdump_stale
 local -i had_extended_glob=0
 [[ -o extended_glob ]] && had_extended_glob=1

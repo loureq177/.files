@@ -17,12 +17,6 @@
   "compaction": {
     "auto": true
   },
-  // V2 native format: ordered rules, last matching rule wins.
-  // Broad rules first, narrow exceptions last. Migrated from V1
-  // `permission` (bash -> shell, task -> subagent).
-  // NOTE: V1 `list`, `todowrite` and permission `lsp` have no V2
-  // equivalent and were dropped. `execute` is new in V2 (Code Mode
-  // gate) - without it everything falls back to `ask`.
   "permissions": [
     { "action": "read", "resource": "*", "effect": "allow" },
     { "action": "read", "resource": "*.env", "effect": "ask" },
@@ -60,7 +54,6 @@
     { "action": "question", "resource": "*", "effect": "allow" },
     { "action": "skill", "resource": "*", "effect": "allow" },
     { "action": "subagent", "resource": "*", "effect": "allow" },
-    // shell: default allow, dangerous ones ask/deny below
     { "action": "shell", "resource": "*", "effect": "allow" },
     { "action": "shell", "resource": "tee *", "effect": "ask" },
     { "action": "shell", "resource": "find *-exec*", "effect": "ask" },
@@ -72,8 +65,6 @@
     { "action": "shell", "resource": "rmdir *", "effect": "ask" },
     { "action": "shell", "resource": "unlink *", "effect": "ask" },
     { "action": "shell", "resource": "shred *", "effect": "ask" },
-    // privilege escalation: no passwordless sudo here and the agent can't
-    // type a password, so block outright instead of pointlessly asking
     { "action": "shell", "resource": "sudo", "effect": "deny" },
     { "action": "shell", "resource": "sudo *", "effect": "deny" },
     { "action": "shell", "resource": "sudo*", "effect": "deny" },
@@ -160,8 +151,6 @@
     { "action": "shell", "resource": "git remote set-url*", "effect": "ask" },
     { "action": "shell", "resource": "git submodule*", "effect": "ask" },
     { "action": "shell", "resource": "uv publish*", "effect": "ask" },
-    // narrow overrides MUST stay last: last matching rule wins
-    // Anything that fetches and executes remote code: prompt instead of allow.
     { "action": "shell", "resource": "npm ci", "effect": "ask" },
     { "action": "shell", "resource": "npm install*", "effect": "ask" },
     { "action": "shell", "resource": "npm i *", "effect": "ask" },

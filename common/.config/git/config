@@ -30,13 +30,12 @@
 	autoSetupRemote = true
 
 [credential "https://github.com"]
-	helper = 
+	helper =
 	helper = !gh auth git-credential
 
 [credential "https://gist.github.com"]
-	helper = 
+	helper =
 	helper = !gh auth git-credential
 
-# Machine/identity-local overrides (e.g. work vs personal email, signing keys)
 [include]
 	path = config.local

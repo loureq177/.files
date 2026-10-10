@@ -1,7 +1,3 @@
-# Safety: every delete in yazi lands in the freedesktop trash first.
-# `d' already trashes by default; this remaps `D' (permanent delete) to trash
-# too, so nothing in yazi deletes irreversibly by accident. Permanent deletion
-# stays available from the shell (rm / trash-empty / gio trash --empty).
 [[mgr.prepend_keymap]]
 on = "D"
 run = "remove"

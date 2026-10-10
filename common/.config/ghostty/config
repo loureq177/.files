@@ -14,10 +14,6 @@ mouse-hide-while-typing = true
 mouse-scroll-multiplier = discrete:1,precision:1
 focus-follows-mouse = true
 clipboard-read = allow
-# clipboard-write = deny prevents an OSC 52 race bug under Wayland (Hyprland/KWin)
-# where local CLI tools (agy, Claude Code, etc.) write to clipboard and cause
-# Ghostty to claim & immediately lose the GDK data offer, breaking Ctrl+Shift+V
-# and spilling raw Kitty keyboard sequences (^[[118;6u -> 18;6u).
 clipboard-write = deny
 confirm-close-surface = false
 
@@ -32,14 +28,8 @@ background-opacity = 1.0
 background-blur = false
 minimum-contrast = 1
 
-# Universal clipboard & selection
 keybind = ctrl+shift+v=paste_from_clipboard
 keybind = shift+insert=paste_from_clipboard
 keybind = ctrl+shift+a=select_all
 
-# Machine-local perf profile managed by power-save (XDG_STATE_HOME).
-# Loaded last so it overrides everything above (opaque base here,
-# eye-candy toggled by power-save). `?` keeps fresh clones working
-# before power-save seeds the file.
 config-file = ?~/.local/state/ghostty/perf.conf
-

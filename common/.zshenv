@@ -4,7 +4,6 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
-# Keep live shell state outside the stowed repo dir (gitignored but pollutes stow).
 export ZSH_STATE_DIR="${XDG_STATE_HOME}/zsh"
 HISTFILE="$ZSH_STATE_DIR/history"
 
@@ -40,12 +39,8 @@ export MATLAB_USERDIR="${XDG_CONFIG_HOME}/matlab"
 
 export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
 
-
-# opencode
 export PATH="$HOME/.opencode/bin:$PATH"
 
-# macos
 if [[ -d "/opt/homebrew/opt/coreutils/libexec/gnubin" ]]; then
     export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 fi
-

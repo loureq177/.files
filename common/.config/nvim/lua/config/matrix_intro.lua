@@ -55,7 +55,6 @@ local function scramble(chars, progress)
 	return table.concat(result)
 end
 
--- helper: stop+close a uv timer safely (was duplicated 3x)
 local function stop_timer(t)
 	if t and not t:is_closing() then
 		t:stop()
@@ -63,7 +62,6 @@ local function stop_timer(t)
 	end
 end
 
--- helper: rotate a char-array in place (was duplicated inline in glitch block)
 local function rotate(chars, offset)
 	if offset > 0 then
 		for _ = 1, offset do

@@ -1,5 +1,3 @@
-# Only overrides live here; everything else follows yazi's built-in defaults.
-
 [mgr]
 ratio = [15, 20, 30]
 linemode = "size"

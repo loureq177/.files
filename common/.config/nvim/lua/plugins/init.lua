@@ -7,7 +7,6 @@ vim.api.nvim_create_autocmd("User", {
 })
 
 return {
-	-- Theme
 	{
 		"projekt0n/github-nvim-theme",
 		name = "github-theme",
@@ -19,10 +18,8 @@ return {
 		end,
 	},
 
-	-- Disabled plugins
 	{ "folke/flash.nvim", enabled = false },
 
-	-- Aerial (Symbols Outline)
 	{
 		"stevearc/aerial.nvim",
 		opts = {
@@ -46,7 +43,6 @@ return {
 		},
 	},
 
-	-- Formatting (Conform)
 	{
 		"stevearc/conform.nvim",
 		opts = function(_, opts)
@@ -68,7 +64,6 @@ return {
 		end,
 	},
 
-	-- Python / LSP
 	{
 		"neovim/nvim-lspconfig",
 		opts = {
@@ -85,17 +80,14 @@ return {
 		},
 	},
 
-	-- Vimtex
 	{
 		"lervag/vimtex",
 		lazy = true,
 		ft = { "tex", "bib", "cls", "sty" },
 	},
 
-	-- Snacks
 	{
 		"folke/snacks.nvim",
-		---@type snacks.Config
 		opts = {
 			terminal = { win = { wo = { winbar = "" } } },
 			explorer = { replace_netrw = true },
