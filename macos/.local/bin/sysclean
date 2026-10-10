@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-# macOS system cleanup: Homebrew, trash, dev caches (uv/npm/etc.), and container prune.
 set -euo pipefail
 
 _log_info() { echo "\033[0;34m[sysclean]\033[0m $*"; }
@@ -11,7 +10,6 @@ run_if() {
 }
 
 avail_bytes() {
-    # Available bytes on /. APFS shares space across volumes, so only track /.
     df -k / 2>/dev/null | awk 'NR==2 {print $4 * 1024}'
 }
 
@@ -30,7 +28,6 @@ human_bytes() {
 }
 
 print_total() {
-    # Prominent final summary. No ui.sh on macOS, so use standard bold green.
     local freed_h="$1"
     local green reset
     green="$(printf '\033[1;32m')"

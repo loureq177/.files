@@ -1,7 +1,4 @@
 #!/usr/bin/env zsh
-# macOS system updater: Homebrew, Mac App Store, zinit, dev tools (uv/pipx/nvim), and OS updates.
-# Usage: sysupdate [--only=brew,mas,zinit,tldr,uv,pipx,nvim,os]
-#   --only  runs a comma-separated subset (e.g. --only=brew,uv)
 set -euo pipefail
 
 export HOMEBREW_NO_ENV_HINTS=1
@@ -23,7 +20,7 @@ _wanted() {
 }
 
 _log_info() { echo "\033[0;34m[sysupdate]\033[0m $*"; }
-_timed() { # _timed <label> <cmd...>: logs elapsed seconds per step so 1m4s is attributable
+_timed() {
     local label=$1; shift
     local start=$SECONDS
     "$@" || true
@@ -35,14 +32,12 @@ _brew_step() {
     _log_info "Updating Homebrew packages and casks..."
     local start=$SECONDS
     brew update || true
-    # Already updated above; don't auto-update a second time inside upgrade.
     HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --quiet || true
     _log_info "Homebrew done (took $((SECONDS - start))s)"
 }
 
 _mas_step() {
     command -v mas >/dev/null 2>&1 || return 0
-    # `mas upgrade` with nothing outdated still costs a network round-trip.
     if mas outdated 2>/dev/null | grep -q .; then
         _timed "Mac App Store applications" mas upgrade || true
     else
@@ -52,11 +47,10 @@ _mas_step() {
 
 _zinit_step() {
     { [ -d "$HOME/.local/share/zinit" ] || command -v zinit >/dev/null 2>&1; } || return 0
-    # -i loads the interactive env zinit needs (sources the full zshrc).
     _timed "Zinit plugins" zsh -ic "zinit self-update && zinit update --all" || true
 }
 
-_dev_step() { # tldr/uv/pipx are independent: run together, not sequentially
+_dev_step() {
     local -a pids; pids=()
     if _wanted tldr && command -v tldr >/dev/null 2>&1; then
         tldr --update & pids+=($!)
@@ -80,7 +74,6 @@ _nvim_step() {
 
 TOTAL_START=$SECONDS
 
-# brew is the long pole; overlap everything else with it.
 typeset -a _pids; _pids=()
 if _wanted brew; then _brew_step & _pids+=($!); fi
 if _wanted mas; then _mas_step & _pids+=($!); fi
@@ -92,7 +85,6 @@ if (( ${#_pids[@]} )); then
 fi
 
 if _wanted os; then
-    # softwareupdate -l is 10-30s of Apple server wait on its own.
     if command -v softwareupdate >/dev/null 2>&1; then
         _timed "macOS system updates (list only)" softwareupdate -l || true
     fi
