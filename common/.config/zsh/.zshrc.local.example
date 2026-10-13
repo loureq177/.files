@@ -1,0 +1,13 @@
+# ~/.config/zsh/.zshrc.local
+# Machine-specific shell setup: sourced at the end of .zshrc, ignored by git
+# and stow. Copy this file to .zshrc.local and keep what applies.
+
+# Work or machine-only environment.
+# export AWS_PROFILE="work"
+# export KUBECONFIG="$HOME/.kube/work.yaml"
+
+# Aliases that make sense on this machine only.
+# alias vpn="sudo tailscale up"
+
+# Tools installed outside the package manager.
+# path=("$HOME/.local/share/some-sdk/bin" $path)

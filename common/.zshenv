@@ -35,7 +35,6 @@ if [[ -d "$HOME/.config/herd-lite/bin" && ":${PHP_INI_SCAN_DIR:-}:" != *":$HOME/
 fi
 
 export NSS_DEFAULT_DB_DIR="${XDG_DATA_HOME}/pki/nssdb"
-export MATLAB_USERDIR="${XDG_CONFIG_HOME}/matlab"
 
 export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
 
