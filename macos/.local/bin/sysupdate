@@ -1,4 +1,5 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
+# Kept to bash 3.2, which is what macOS ships.
 set -euo pipefail
 
 export HOMEBREW_NO_ENV_HINTS=1
@@ -19,7 +20,7 @@ _wanted() {
     [[ ",$ONLY," == *",$1,"* ]]
 }
 
-_log_info() { echo "\033[0;34m[sysupdate]\033[0m $*"; }
+_log_info() { printf '\033[0;34m[sysupdate]\033[0m %s\n' "$*"; }
 _timed() {
     local label=$1; shift
     local start=$SECONDS
@@ -51,15 +52,15 @@ _zinit_step() {
 }
 
 _dev_step() {
-    local -a pids; pids=()
+    local pids=()
     if _wanted tldr && command -v tldr >/dev/null 2>&1; then
-        tldr --update & pids+=($!)
+        tldr --update & pids+=("$!")
     fi
     if _wanted uv && command -v uv >/dev/null 2>&1; then
-        uv tool upgrade --all 2>/dev/null & pids+=($!)
+        uv tool upgrade --all 2>/dev/null & pids+=("$!")
     fi
     if _wanted pipx && command -v pipx >/dev/null 2>&1; then
-        pipx upgrade-all 2>/dev/null & pids+=($!)
+        pipx upgrade-all 2>/dev/null & pids+=("$!")
     fi
     if (( ${#pids[@]} )); then
         for pid in "${pids[@]}"; do wait "$pid" || true; done
@@ -74,12 +75,12 @@ _nvim_step() {
 
 TOTAL_START=$SECONDS
 
-typeset -a _pids; _pids=()
-if _wanted brew; then _brew_step & _pids+=($!); fi
-if _wanted mas; then _mas_step & _pids+=($!); fi
-if _wanted zinit; then _zinit_step & _pids+=($!); fi
-_dev_step & _pids+=($!)
-if _wanted nvim; then _nvim_step & _pids+=($!); fi
+_pids=()
+if _wanted brew; then _brew_step & _pids+=("$!"); fi
+if _wanted mas; then _mas_step & _pids+=("$!"); fi
+if _wanted zinit; then _zinit_step & _pids+=("$!"); fi
+_dev_step & _pids+=("$!")
+if _wanted nvim; then _nvim_step & _pids+=("$!"); fi
 if (( ${#_pids[@]} )); then
     for pid in "${_pids[@]}"; do wait "$pid" || true; done
 fi
