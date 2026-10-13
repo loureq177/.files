@@ -129,10 +129,6 @@ function __tab_complete_dispatch() {
 zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
 
-if [[ "${OSTYPE:-}" != darwin* ]] && [ -z "${DISPLAY}" ] && [ -z "${WAYLAND_DISPLAY}" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
-    command -v start-hyprland >/dev/null 2>&1 && exec start-hyprland
-fi
-
 [ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"
 
 autoload -Uz bashcompinit && bashcompinit
