@@ -7,8 +7,8 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git --type d'
 export FZF_CTRL_T_OPTS='--no-height --preview "bat --color=always --style=numbers --line-range=:500 {}" --preview-window=right:50% --multi'
 export FZF_ALT_C_OPTS='--no-height --preview "eza -T -L 3 --icons --color=always {}" --preview-window=right:50%'
-[[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/ui/ui.sh" ]] && source "${XDG_CONFIG_HOME:-$HOME/.config}/ui/ui.sh"
-fzf_colors="${UI_FZF_THEME:-bg+:#21262d,bg:#0d1117,fg:#c9d1d9,hl:#58a6ff,fg+:#c9d1d9,hl+:#58a6ff,header:#58a6ff,info:#8b949e,pointer:#58a6ff,marker:#3fb950,prompt:#58a6ff,spinner:#58a6ff,border:#30363d}"
+# The ui.toml palette, by hand: macOS has no apply-ui.
+fzf_colors='bg+:#21262d,bg:#0d1117,fg:#c9d1d9,hl:#58a6ff,fg+:#c9d1d9,hl+:#58a6ff,header:#58a6ff,info:#8b949e,pointer:#58a6ff,marker:#3fb950,prompt:#58a6ff,spinner:#58a6ff,border:#30363d'
 export FZF_DEFAULT_OPTS="--layout=reverse --border=rounded --info=inline --bind 'ctrl-/:toggle-preview' --color=${fzf_colors}"
 
 HISTFILE="${ZSH_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/zsh}/history"
