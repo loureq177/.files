@@ -20,12 +20,13 @@ _wanted() {
     [[ ",$ONLY," == *",$1,"* ]]
 }
 
-_log_info() { printf '\033[0;34m[sysupdate]\033[0m %s\n' "$*"; }
+source "$HOME/.local/lib/dotfiles/common.sh"
+
 _timed() {
     local label=$1; shift
     local start=$SECONDS
     "$@" || true
-    _log_info "$label (took $((SECONDS - start))s)"
+    _log_ok "$label (took $((SECONDS - start))s)"
 }
 
 _brew_step() {
@@ -34,7 +35,7 @@ _brew_step() {
     local start=$SECONDS
     brew update || true
     HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --quiet || true
-    _log_info "Homebrew done (took $((SECONDS - start))s)"
+    _log_ok "Homebrew (took $((SECONDS - start))s)"
 }
 
 _mas_step() {
@@ -42,7 +43,7 @@ _mas_step() {
     if mas outdated 2>/dev/null | grep -q .; then
         _timed "Mac App Store applications" mas upgrade || true
     else
-        _log_info "Mac App Store: nothing outdated, skipping."
+        _log_ok "Mac App Store: nothing outdated."
     fi
 }
 
@@ -91,4 +92,4 @@ if _wanted os; then
     fi
 fi
 
-_log_info "macOS update completed in $((SECONDS - TOTAL_START))s!"
+_log_ok "macOS update completed in $((SECONDS - TOTAL_START))s."
