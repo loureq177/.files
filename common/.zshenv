@@ -35,8 +35,6 @@ fi
 
 export NSS_DEFAULT_DB_DIR="${XDG_DATA_HOME}/pki/nssdb"
 
-export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="$HOME/.config/gws/client_secret.json"
-
 export PATH="$HOME/.opencode/bin:$PATH"
 
 if [[ -d "/opt/homebrew/opt/coreutils/libexec/gnubin" ]]; then
