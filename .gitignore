@@ -10,7 +10,6 @@ node_modules/
 __pycache__
 *.pyc
 service.json
-backup.conf
 client_secret.json
 credentials.json
 *.pem
@@ -18,11 +17,8 @@ credentials.json
 id_*
 known_hosts*
 **/.ssh/config
-local.lua
 config.local
 *.local
-archlinux/.config/hypr/wallpapers/*
-!archlinux/.config/hypr/wallpapers/hyprland.webp
 
 !**/.local/
 

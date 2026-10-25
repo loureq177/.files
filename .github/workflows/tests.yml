@@ -12,8 +12,7 @@ jobs:
       - name: Install tools
         run: |
           pacman -Syu --noconfirm --needed \
-            git diffutils bats parallel shellcheck nodejs lua stow zsh python ruff \
-            pacman-contrib qt6-declarative qt6-shadertools
+            git diffutils bats parallel shellcheck lua stow zsh python
           useradd -m tester
 
       - uses: actions/checkout@v4
