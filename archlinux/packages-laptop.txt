@@ -1,3 +1,0 @@
-brightnessctl
-power-profiles-daemon
-upower
