@@ -3,9 +3,13 @@ set -euo pipefail
 
 SRC="${XDG_CONFIG_HOME:-$HOME/.config}/firefox-defaults"
 # Firefox keeps its profiles under XDG_CONFIG_HOME, or in ~/.mozilla when
-# that directory was there first.
-FF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"
-[ -f "$FF_DIR/profiles.ini" ] || [ ! -f "$HOME/.mozilla/firefox/profiles.ini" ] || FF_DIR="$HOME/.mozilla/firefox"
+# that directory was there first; on macOS in Application Support.
+if [ "$(uname -s)" = Darwin ]; then
+    FF_DIR="$HOME/Library/Application Support/Firefox"
+else
+    FF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/mozilla/firefox"
+    [ -f "$FF_DIR/profiles.ini" ] || [ ! -f "$HOME/.mozilla/firefox/profiles.ini" ] || FF_DIR="$HOME/.mozilla/firefox"
+fi
 INIFILE="$FF_DIR/profiles.ini"
 
 [ -f "$INIFILE" ] || {
