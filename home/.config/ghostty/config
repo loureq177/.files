@@ -8,7 +8,6 @@ font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
 
-cursor-style = block
 cursor-style-blink = false
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = discrete:1,precision:1
@@ -20,12 +19,9 @@ confirm-close-surface = false
 working-directory = home
 window-inherit-working-directory = false
 tab-inherit-working-directory = false
-window-inherit-font-size = true
 window-padding-x = 8
 window-padding-y = 8
 window-padding-balance = true
-background-opacity = 1.0
-minimum-contrast = 1
 
 keybind = ctrl+shift+v=paste_from_clipboard
 keybind = shift+insert=paste_from_clipboard
