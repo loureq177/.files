@@ -96,7 +96,7 @@ return {
 				ignored = false,
 				sources = {
 					explorer = {
-						layout = { layout = { position = "right", width = 32 } },
+						layout = { layout = { position = "right" } },
 					},
 					files = {
 						hidden = true,
