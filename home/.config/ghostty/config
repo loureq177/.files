@@ -25,6 +25,9 @@ window-padding-balance = true
 
 keybind = ctrl+shift+v=paste_from_clipboard
 keybind = shift+insert=paste_from_clipboard
-keybind = ctrl+shift+a=select_all
+keybind = ctrl+shift+z=undo
 
 config-file = ?~/.local/state/ghostty/perf.conf
+
+
+undo-timeout = 60s
