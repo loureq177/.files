@@ -26,6 +26,10 @@ window-padding-balance = true
 keybind = ctrl+shift+v=paste_from_clipboard
 keybind = shift+insert=paste_from_clipboard
 keybind = ctrl+shift+z=undo
+# The scrollback a few lines at a time, held for more (as j / k in vim);
+# shift+page_up / page_down still go a page.
+keybind = ctrl+shift+k=scroll_page_lines:-3
+keybind = ctrl+shift+j=scroll_page_lines:3
 
 config-file = ?~/.local/state/ghostty/perf.conf
 
