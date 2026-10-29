@@ -1,0 +1,58 @@
+# What these configs use on Arch, installed by install.sh with pacman (the
+# Brewfile is macOS'). One name per line; blank lines and # comments are skipped.
+
+# Terminal: shell, prompt and the tools the zsh config aliases
+ghostty
+zsh
+starship
+bat
+btop
+eza
+fd
+fzf
+ripgrep
+yazi
+zoxide
+chafa
+resvg
+man-db
+tealdeer
+fastfetch
+
+# Editor and development
+neovim
+python-pynvim
+tree-sitter-cli
+git
+git-delta
+github-cli
+lazygit
+opencode
+bun
+cmake
+nodejs
+npm
+python-pip
+python-virtualenv
+ruff
+rust
+uv
+
+# Command-line utilities
+7zip
+dog
+dua-cli
+duf
+httpie
+hyperfine
+jless
+moreutils
+openbsd-netcat
+parallel
+strace
+unzip
+wget
+zip
+
+# install.sh
+stow

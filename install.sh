@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Links home/ into ~ with stow. On macOS it installs Homebrew and the Brewfile
-# first. Kept to bash 3.2, which is what macOS ships.
+# Links home/ into ~ with stow, after the programs: the Brewfile (and Homebrew) on
+# macOS, packages-arch.txt on Arch. Kept to bash 3.2, which is what macOS ships.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]:-$0}")"
 
@@ -30,13 +30,12 @@ Darwin)
     command -v stow &>/dev/null || brew install stow
     ;;
 Linux)
-    if ! command -v stow &>/dev/null; then
-        if command -v pacman &>/dev/null; then
-            sudo pacman -S --needed --noconfirm stow
-        else
-            _log_error "Install stow first."
-            exit 1
-        fi
+    if command -v pacman &>/dev/null; then
+        _log_info "Installing packages-arch.txt..."
+        grep -vE '^[[:space:]]*(#|$)' packages-arch.txt | sudo pacman -S --needed --noconfirm -
+    elif ! command -v stow &>/dev/null; then
+        _log_error "Install stow first (and the programs of packages-arch.txt)."
+        exit 1
     fi
     ;;
 *)
@@ -56,6 +55,13 @@ if ! err="$(stow --simulate --restow --target ~ home 2>&1)"; then
     exit 1
 fi
 stow --verbose --restow --target ~ home
+
+# zsh reads .zshenv (ZDOTDIR) only as the login shell; macOS has it already.
+zsh_path="$(command -v zsh || true)"
+if [ "$(uname -s)" = Linux ] && [ -n "$zsh_path" ] && [ "$(getent passwd "$USER" | cut -d: -f7)" != "$zsh_path" ]; then
+    _log_info "Making zsh the login shell..."
+    sudo chsh -s "$zsh_path" "$USER" || _log_warn "Failed to change the login shell to zsh."
+fi
 
 if command -v bat &>/dev/null; then
     bat cache --build >/dev/null || _log_warn "bat cache build failed."
