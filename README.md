@@ -10,6 +10,7 @@ My terminal setup for Arch Linux and macOS, linked into `~` with [GNU Stow](http
 - **opencode**: commands and theme
 - **Firefox**: privacy defaults (`firefox-apply`)
 - **Brewfile** for macOS, **packages-arch.txt** for Arch
+- **Karabiner** on macOS: Caps Lock is Escape tapped and Control held, as keyd does on the desktop. Turn it on once in Karabiner-Elements: Complex Modifications, Add predefined rule
 
 ## Install
 
