@@ -3,5 +3,8 @@
   "theme": {
     "name": "github-transparent"
   },
+  "scroll": {
+    "speed": 1
+  },
   "animations": true
 }
