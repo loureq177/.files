@@ -1,7 +1,3 @@
-[mgr]
-ratio = [15, 20, 30]
-linemode = "size_and_modified"
-
 [preview]
 max_width = 3000
 max_height = 3000
