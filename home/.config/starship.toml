@@ -1,9 +1,9 @@
 # Starship in the terminal's palette by name, so it follows the theme (on the desktop, ui.toml's
-# colours through Ghostty): the prompt in the accent, the folder too.
+# colours through Ghostty): blue to purple as the accents, the folder blue, the prompt purple.
 [character]
-success_symbol = "[❯](bold blue)"
+success_symbol = "[❯](bold purple)"
 error_symbol = "[❯](bold red)"
-vimcmd_symbol = "[❮](bold purple)"
+vimcmd_symbol = "[❮](bold blue)"
 
 [directory]
 style = "bold blue"
