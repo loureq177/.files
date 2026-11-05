@@ -1,5 +1,3 @@
-working-directory = /home/mlorenc/Studia/TP4.0/7_semestr/porownanie-architektur-llm
-
 config-file = ?arch.conf
 theme = GitHub Dark Default
 
@@ -30,6 +28,8 @@ keybind = ctrl+shift+k=scroll_page_lines:-3
 keybind = ctrl+shift+j=scroll_page_lines:3
 
 config-file = ?~/.local/state/ghostty/perf.conf
+# This machine's own, out of git (working-directory and the like).
+config-file = ?config.local
 
 
 undo-timeout = 60s

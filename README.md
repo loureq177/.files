@@ -19,6 +19,6 @@ git clone https://github.com/loureq177/.files.git ~/.files
 ~/.files/install.sh
 ```
 
-It installs the programs first: Homebrew and the Brewfile on macOS, `packages-arch.txt` with pacman on Arch (and makes zsh the login shell there). Machine-local files (`~/.config/git/config.local`, `~/.config/zsh/.zshrc.local`, `~/.ssh/config`) stay out of git; each has an `.example`.
+It installs the programs first: Homebrew and the Brewfile on macOS, `packages-arch.txt` with pacman on Arch (and makes zsh the login shell there). Machine-local files (`~/.config/git/config.local`, `~/.config/zsh/.zshrc.local`, `~/.ssh/config`, `~/.config/ghostty/config.local`) stay out of git; all but Ghostty's have an `.example`.
 
 The Hyprland desktop that goes with it on Arch is [desktop](https://github.com/loureq177/desktop).
