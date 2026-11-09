@@ -56,6 +56,20 @@ if ! err="$(stow --simulate --restow --target ~ home 2>&1)"; then
 fi
 stow --verbose --restow --target ~ home
 
+# Language servers for Claude Code; Lua's and TypeScript's come with the packages above
+_log_info "Installing language servers..."
+uv tool install pyrefly || _log_warn "pyrefly failed to install."
+npm install -g --prefix ~/.local --loglevel=error intelephense >/dev/null || _log_warn "intelephense failed to install."
+if command -v claude &>/dev/null; then
+    claude plugin marketplace add anthropics/claude-plugins-official >/dev/null || _log_warn "Claude Code's official marketplace failed to add."
+    claude plugin marketplace add "$PWD/claude-plugins" >/dev/null || _log_warn "Claude Code's claude-plugins marketplace failed to add."
+    plugins="lua-lsp@claude-plugins-official php-lsp@claude-plugins-official typescript-lsp@claude-plugins-official pyrefly-lsp@files"
+    [ "$(uname -s)" = Linux ] && plugins="$plugins qml-lsp@files"
+    for p in $plugins; do
+        claude plugin install "$p" >/dev/null || _log_warn "Claude Code plugin $p failed to install."
+    done
+fi
+
 # zsh reads .zshenv (ZDOTDIR) only as the login shell; macOS has it already.
 zsh_path="$(command -v zsh || true)"
 if [ "$(uname -s)" = Linux ] && [ -n "$zsh_path" ] && [ "$(getent passwd "$USER" | cut -d: -f7)" != "$zsh_path" ]; then

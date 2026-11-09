@@ -1,0 +1,19 @@
+{
+  "name": "files",
+  "description": "Language servers the official marketplace lacks, from ~/.files",
+  "owner": {
+    "name": "loureq177"
+  },
+  "plugins": [
+    {
+      "name": "pyrefly-lsp",
+      "source": "./pyrefly-lsp",
+      "description": "Python through Pyrefly (uv tool install pyrefly)"
+    },
+    {
+      "name": "qml-lsp",
+      "source": "./qml-lsp",
+      "description": "QML through qmlls from qt6-declarative"
+    }
+  ]
+}

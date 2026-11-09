@@ -1,0 +1,11 @@
+{
+  "name": "qml-lsp",
+  "description": "QML through qmlls from qt6-declarative",
+  "version": "1.0.0",
+  "lspServers": {
+    "qmlls": {
+      "command": "/usr/lib/qt6/bin/qmlls",
+      "extensionToLanguage": { ".qml": "qml" }
+    }
+  }
+}

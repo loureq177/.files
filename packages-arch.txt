@@ -23,10 +23,12 @@ fastfetch
 neovim
 python-pynvim
 tree-sitter-cli
+typescript-language-server
 git
 git-delta
 github-cli
 lazygit
+lua-language-server
 opencode
 bun
 cmake

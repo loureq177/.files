@@ -8,6 +8,7 @@ My terminal setup for Arch Linux and macOS, linked into `~` with [GNU Stow](http
 - **Neovim**: LazyVim
 - **Ghostty**, **yazi**, **btop**, **bat**, **lazygit**, **git** with delta, all in GitHub Dark
 - **opencode**: commands and theme
+- **Claude Code**: language servers as plugins, so edits come back with the errors: Pyrefly, TypeScript, Intelephense, Lua and on Arch QML (`claude-plugins/` holds the two the official marketplace lacks)
 - **Firefox**: privacy defaults (`firefox-apply`)
 - **Brewfile** for macOS, **packages-arch.txt** for Arch
 - **Karabiner** on macOS: Caps Lock is Escape tapped and Control held, as keyd does on the desktop. Turn it on once in Karabiner-Elements: Complex Modifications, Add predefined rule

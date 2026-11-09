@@ -1,0 +1,22 @@
+{
+  "name": "pyrefly-lsp",
+  "description": "Python through Pyrefly (uv tool install pyrefly)",
+  "version": "1.0.1",
+  "lspServers": {
+    "pyrefly": {
+      "command": "pyrefly",
+      "args": [
+        "lsp"
+      ],
+      "extensionToLanguage": {
+        ".py": "python",
+        ".pyi": "python"
+      },
+      "initializationOptions": {
+        "pyrefly": {
+          "typeCheckingMode": "default"
+        }
+      }
+    }
+  }
+}
