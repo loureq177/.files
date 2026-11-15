@@ -6,7 +6,24 @@ vim.api.nvim_create_autocmd("User", {
 	end,
 })
 
+-- Not on the first screen: each attaches, as it loads, to the buffers already open.
+local function after_first_screen(name)
+	return {
+		name,
+		event = function()
+			return { "VeryLazy" }
+		end,
+	}
+end
+
 return {
+	after_first_screen("lewis6991/gitsigns.nvim"),
+	after_first_screen("gbprod/yanky.nvim"),
+	after_first_screen("folke/todo-comments.nvim"),
+	after_first_screen("nvim-mini/mini.hipatterns"),
+	after_first_screen("stevearc/aerial.nvim"),
+	after_first_screen("windwp/nvim-ts-autotag"),
+
 	{
 		"projekt0n/github-nvim-theme",
 		name = "github-theme",
@@ -14,7 +31,6 @@ return {
 		priority = 1000,
 		config = function()
 			require("github-theme").setup({ options = { transparent = true } })
-			vim.cmd.colorscheme("github_dark_default")
 		end,
 	},
 
@@ -66,6 +82,26 @@ return {
 
 	{
 		"neovim/nvim-lspconfig",
+		-- A file nvim opens with is drawn first: mason's registry and the servers' setup (~27 ms)
+		-- come with VeryLazy, and vim.lsp.enable attaches the servers to the buffers already open.
+		event = function()
+			return {}
+		end,
+		init = function()
+			vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+				once = true,
+				callback = function()
+					local function load()
+						require("lazy").load({ plugins = { "nvim-lspconfig" } })
+					end
+					if vim.g.did_very_lazy then
+						load()
+					else
+						vim.api.nvim_create_autocmd("User", { pattern = "VeryLazy", once = true, callback = load })
+					end
+				end,
+			})
+		end,
 		opts = {
 			servers = {
 				pyrefly = {},
