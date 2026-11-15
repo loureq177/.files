@@ -52,8 +52,8 @@ if [[ "${OSTYPE:-}" == darwin* ]]; then
     alias -s {png,jpg,jpeg,webp,gif,bmp,svg}=open
     alias -s {mp4,mov,avi,mkv,webm,MP4,MOV}=open
 else
-    alias -s html='firefox'
-    alias -s {pdf,PDF}=firefox
+    alias -s html=xdg-open
+    alias -s {pdf,PDF}=xdg-open
     alias -s {png,jpg,jpeg,webp,gif,bmp,svg}=xdg-open
     alias -s {mp4,mov,avi,mkv,webm,MP4,MOV}=xdg-open
 fi
