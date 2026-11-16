@@ -27,8 +27,6 @@ Darwin)
     fi
     _log_info "Installing the Brewfile..."
     brew bundle --file=Brewfile
-    # Its Karabiner driver must match its version (README): upgraded together, by hand.
-    brew pin kanata
     command -v stow &>/dev/null || brew install stow
     ;;
 Linux)

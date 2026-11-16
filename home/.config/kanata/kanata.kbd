@@ -1,5 +1,5 @@
 ;; Caps Lock: Escape tapped, Control held. Tab: Tab tapped; held, hjkl are the arrows
-;; and no Tab is typed. The same on macOS and Arch.
+;; and no Tab is typed. Arch only; the Mac does the same in Karabiner (desktop-keys.json).
 (defcfg
   process-unmapped-keys yes
 )
