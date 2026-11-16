@@ -65,6 +65,19 @@ _launch_daemon() {
     sudo launchctl print "system/$1" &>/dev/null || sudo launchctl bootstrap system "$plist"
 }
 
+# The same for the user's own agent, without sudo.
+_launch_agent() {
+    local plist="$HOME/Library/LaunchAgents/$1.plist" domain new
+    domain="gui/$(id -u)"
+    new="$(cat)"
+    if [ "$(cat "$plist" 2>/dev/null)" != "$new" ]; then
+        mkdir -p "${plist%/*}"
+        printf '%s\n' "$new" >"$plist"
+        launchctl bootout "$domain/$1" 2>/dev/null || true
+    fi
+    launchctl print "$domain/$1" &>/dev/null || launchctl bootstrap "$domain" "$plist"
+}
+
 macos_kanata() {
     local tmp bin version
     bin="$(brew --prefix)/opt/kanata/bin/kanata"
@@ -137,6 +150,20 @@ stow --verbose --restow --target ~ home
 
 # After stow: the daemon reads ~/.config/kanata/kanata.kbd.
 [ "$(uname -s)" = Darwin ] && { macos_kanata || _log_warn "kanata failed to install: the keys stay as they are."; }
+
+# Ghostty's cursor shader on AC only; macOS has no power-source hook, so a check every 30 s.
+if [ "$(uname -s)" = Darwin ]; then
+    _launch_agent local.ghostty-effects <<EOF || _log_warn "ghostty-effects failed to load: the cursor shader stays off."
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>local.ghostty-effects</string>
+  <key>ProgramArguments</key><array><string>$HOME/.local/bin/ghostty-effects</string></array>
+  <key>RunAtLoad</key><true/>
+  <key>StartInterval</key><integer>30</integer>
+</dict></plist>
+EOF
+fi
 
 # Language servers for Claude Code; Lua's and TypeScript's come with the packages above
 _log_info "Installing language servers..."

@@ -77,3 +77,10 @@ load helpers
         git -C "$REPO" check-ignore -q "$real" || fail "$real would be committed (not in .gitignore), but $example suggests it is machine-local"
     done < <(repo_files '*.example')
 }
+
+@test "the ghostty shader ghostty-effects turns on is in the repo" {
+    local shader
+    shader="$(grep -oE '^GHOSTTY_SHADER=.*/ghostty/shaders/[a-z_]+\.glsl' "$REPO/home/.local/bin/ghostty-effects")"
+    [[ -n "$shader" ]] || fail "ghostty-effects no longer names its shader"
+    [[ -f "$REPO/home/.config/ghostty/shaders/${shader##*/}" ]] || fail "missing ${shader##*/}"
+}
