@@ -173,6 +173,16 @@ if command -v starship &>/dev/null; then
   eval "$(starship init zsh)"
 fi
 
+# clear and its prompt in one frame (synchronized output), so Ghostty's cursor trail runs whole.
+# The end hooks in at the first prompt, after Ghostty's cursor shape, which would restart the trail.
+if [[ "${TERM_PROGRAM:-}" == ghostty ]]; then
+    autoload -Uz add-zle-hook-widget add-zsh-hook
+    clear() { print -n '\e[?2026h'; command clear "$@" }
+    __sync_end() { print -n '\e[?2026l' }
+    __sync_hook() { add-zle-hook-widget line-init __sync_end; add-zsh-hook -d precmd __sync_hook }
+    add-zsh-hook precmd __sync_hook
+fi
+
 if command -v fzf &>/dev/null; then
     eval "$(fzf --zsh 2>/dev/null)"
 fi
