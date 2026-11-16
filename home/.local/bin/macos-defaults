@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# macOS preferences: pointer and scroll speeds, fast key repeat, and meeting
+# reminders that stay on screen until dismissed. Caps Lock is kanata's (a hidutil
+# remap here would hand it Escape instead of Caps Lock). Safe to re-run. Key repeat and tracking speeds take effect after logging out and in.
+# Kept to bash 3.2, which is what macOS ships.
+set -euo pipefail
+
+[ "$(uname -s)" = Darwin ] || {
+    echo "macos-defaults: macOS only" >&2
+    exit 1
+}
+
+# Keyboard. Both values are in 15 ms ticks; System Settings stops at 2 and 15.
+defaults write -g KeyRepeat -int 3         # 45 ms between repeats (~22/s)
+defaults write -g InitialKeyRepeat -int 13 # 195 ms before repeating starts
+
+# Pointer and scroll speeds
+defaults write -g com.apple.mouse.scaling -float 3
+defaults write -g com.apple.trackpad.scaling -float 2
+defaults write -g com.apple.scrollwheel.scaling -float 0.5882
+defaults write -g com.apple.swipescrolldirection -bool true
+# Tap to click, for the built-in and the Bluetooth trackpad
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+defaults -currentHost write -g com.apple.mouse.tapBehavior -int 1
+# Mos (Brewfile) smooths the mouse wheel and reverses it, like the trackpad
+defaults write com.caldis.Mos smooth -bool true
+defaults write com.caldis.Mos reverse -bool true
+defaults write com.caldis.Mos speed -float 2.7
+defaults write com.caldis.Mos step -float 33.6
+defaults write com.caldis.Mos duration -float 4.35
+
+# Notification Center keeps one entry per app in com.apple.ncprefs. Bits 3-5 of
+# its flags are the alert style: 0 none, 1 banners (they slide away), 2 alerts
+# (they stay until closed). Edited through an export and an import, so cfprefsd,
+# which caches the domain, does not write its old copy back over the change.
+set_alert_style_alerts() {
+    local tmp i=0 id flags
+    tmp="$(mktemp)"
+    defaults export com.apple.ncprefs "$tmp"
+    while id="$(/usr/libexec/PlistBuddy -c "Print :apps:$i:bundle-id" "$tmp" 2>/dev/null)"; do
+        if [ "$id" = "$1" ]; then
+            flags="$(/usr/libexec/PlistBuddy -c "Print :apps:$i:flags" "$tmp")"
+            if [ $(((flags >> 3) & 7)) -ne 2 ]; then
+                /usr/libexec/PlistBuddy -c "Set :apps:$i:flags $(((flags & ~(7 << 3)) | (2 << 3)))" "$tmp"
+                defaults import com.apple.ncprefs "$tmp"
+                ncprefs_changed=1
+            fi
+            rm -f "$tmp"
+            return 0
+        fi
+        i=$((i + 1))
+    done
+    rm -f "$tmp"
+    echo "macos-defaults: $1 has never sent a notification, so it has no alert style yet; re-run after it has" >&2
+}
+
+ncprefs_changed=0
+# Apple Calendar's event reminders. macOS ships it as alerts already; this keeps
+# it that way on a new Mac and after someone switches it to banners.
+ALERT_APPS=(com.apple.iCal)
+for app in "${ALERT_APPS[@]}"; do
+    set_alert_style_alerts "$app"
+done
+[ "$ncprefs_changed" -eq 0 ] || killall usernoted NotificationCenter 2>/dev/null || true
+
+echo "[OK] macOS defaults applied; log out and in for key repeat and tracking speeds"
