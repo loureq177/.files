@@ -167,5 +167,9 @@ fi
 if command -v firefox &>/dev/null || [ -d "/Applications/Firefox.app" ]; then
     ~/.local/bin/firefox-apply || _log_warn "No Firefox profile yet: run firefox-apply after Firefox has run once."
 fi
+if [ "$(uname -s)" = Darwin ]; then
+    _log_info "Applying macOS defaults..."
+    ~/.local/bin/macos-defaults || _log_warn "macos-defaults failed; fix the error above and run it again."
+fi
 
 _log_ok "Done."

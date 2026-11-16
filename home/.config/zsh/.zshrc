@@ -66,7 +66,52 @@ if [[ ! -d "$ZINIT_HOME" ]]; then
 fi
 source "${ZINIT_HOME}/zinit.zsh"
 
+# Machine-specific setup comes first: it can put tools (ac-platform's kubectl and
+# aws) on PATH and add completion dirs to fpath, and the completion setup below
+# needs both.
+[ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"
+
 zinit light zsh-users/zsh-completions
+
+# Completion scripts the tools generate themselves. They live in ZCOMP_GEN_DIR and
+# are rebuilt whenever the tool's binary is newer than its file, so updating
+# kubectl or Docker refreshes them with no manual step; an up-to-date shell pays
+# one stat per tool. To cover another tool, add a line to the table.
+ZCOMP_GEN_DIR="${XDG_DATA_HOME}/zsh/completions"
+typeset -A zcomp_generators=(
+  kubectl 'completion zsh'
+  docker  'completion zsh'
+  helm    'completion zsh'
+)
+typeset -i zcomp_regenerated=0
+() {
+  local tool args bin gen cand out
+  [[ -d "$ZCOMP_GEN_DIR" ]] || mkdir -p "$ZCOMP_GEN_DIR"
+  for tool args in "${(@kv)zcomp_generators}"; do
+    bin="${commands[$tool]}"
+    [[ -n "$bin" ]] || continue
+    bin="${bin:A}"
+    gen="$ZCOMP_GEN_DIR/_$tool"
+    [[ "$gen" -nt "$bin" ]] && continue
+    # The first binary on PATH may be broken (ac-platform's kubectl is killed by
+    # macOS on some laptops), so try the others in order.
+    for cand in ${(f)"$(whence -pa "$tool")"}; do
+      out="$("$cand" ${=args} 2>/dev/null)"
+      if [[ -n "$out" ]]; then
+        print -r -- "$out" >| "$gen.tmp" && mv -f "$gen.tmp" "$gen" && zcomp_regenerated=1
+        break
+      fi
+    done
+  done
+}
+
+# Later entries end up first: generated files beat Homebrew's, which beat the rest.
+() {
+  local dir
+  for dir in /opt/homebrew/share/zsh/site-functions /home/linuxbrew/.linuxbrew/share/zsh/site-functions "$ZCOMP_GEN_DIR"; do
+    [[ -d "$dir" ]] && fpath=("$dir" $fpath)
+  done
+}
 
 autoload -Uz compinit
 local -a zcompdump_stale
@@ -76,7 +121,8 @@ setopt extended_glob
 zcompdump_stale=("$ZCOMP_DUMP"(#qN.mh+24))
 (( had_extended_glob )) || unsetopt extended_glob
 
-if (( ${#zcompdump_stale} )); then
+# -C trusts the cached dump and would not see a script that was just generated.
+if (( ${#zcompdump_stale} || zcomp_regenerated )); then
   compinit -d "$ZCOMP_DUMP"
 else
   compinit -C -d "$ZCOMP_DUMP"
@@ -85,6 +131,27 @@ fi
 if [[ -s "$ZCOMP_DUMP" && (! -s "$ZCOMP_DUMP.zwc" || "$ZCOMP_DUMP" -nt "$ZCOMP_DUMP.zwc") ]]; then
   zcompile "$ZCOMP_DUMP"
 fi
+
+# aws has no zsh script, only a bash-style completer; take the one that sits next
+# to the aws on PATH so the two versions match.
+autoload -Uz bashcompinit && bashcompinit
+() {
+  local aws="${commands[aws]}" completer
+  [[ -n "$aws" ]] || return
+  completer="${aws:A:h}/aws_completer"
+  [[ -x "$completer" ]] || completer="${commands[aws_completer]}"
+  [[ -x "$completer" ]] && complete -C "$completer" aws
+}
+
+# Wrappers that sit next to kubectl (ac-platform's kubectl-staging and the like)
+# complete as kubectl. The emptiness checks matter: ${:h} of nothing is ".".
+() {
+  local kubectl="${commands[kubectl]}"
+  local -a wrappers
+  [[ -n "$kubectl" ]] || return
+  wrappers=(${kubectl:h}/kubectl-*(N:t))
+  (( $#wrappers && $+functions[_kubectl] )) && compdef _kubectl $wrappers
+}
 
 [[ -s "${BUN_INSTALL}/_bun" ]] && source "${BUN_INSTALL}/_bun"
 
@@ -128,8 +195,3 @@ function __tab_complete_dispatch() {
 }
 zle -N __tab_complete_dispatch
 bindkey '^I' __tab_complete_dispatch
-
-[ -f "$ZDOTDIR/.zshrc.local" ] && source "$ZDOTDIR/.zshrc.local"
-
-autoload -Uz bashcompinit && bashcompinit
-command -v aws >/dev/null 2>&1 && [ -x '/usr/bin/aws_completer' ] && complete -C '/usr/bin/aws_completer' aws

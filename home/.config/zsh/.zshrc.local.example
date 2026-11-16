@@ -1,6 +1,9 @@
 # ~/.config/zsh/.zshrc.local
-# Machine-specific shell setup: sourced at the end of .zshrc, ignored by git
-# and stow. Copy this file to .zshrc.local and keep what applies.
+# Machine-specific shell setup: sourced by .zshrc before completions are set up,
+# ignored by git and stow. Copy this file to .zshrc.local and keep what applies.
+# Because it runs first, PATH and fpath changes here are seen by the completion
+# setup; completion dirs for tools installed outside the package manager go here:
+# fpath=("$HOME/.local/share/some-sdk/completions" $fpath)
 
 # Work or machine-only environment.
 # export AWS_PROFILE="work"
