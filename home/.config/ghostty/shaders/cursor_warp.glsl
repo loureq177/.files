@@ -5,6 +5,9 @@ const float BLUR = 1.0;
 const float TRAIL_THICKNESS = 1.0;
 const float TRAIL_THICKNESS_X = 0.9;
 
+// A bar's trail is a cell wide (JetBrains Mono's width over height), narrowing into the bar.
+const float CELL_ASPECT = 0.4545;
+
 const float FADE_ENABLED = 0.0;
 const float FADE_EXPONENT = 5.0;
 
@@ -12,6 +15,12 @@ const float PI = 3.14159265359;
 
 float ease(float x) {
     return sqrt(1.0 - pow(x - 1.0, 2.0));
+}
+
+// By its size: iPreviousCursorStyle moves on with every terminal update, not with iPreviousCursor.
+float trailWidth(vec4 cursor) {
+    float cell = cursor.w * CELL_ASPECT;
+    return cursor.z < cell * 0.5 ? cell : cursor.z;
 }
 
 float getSdfRectangle(in vec2 p, in vec2 xy, in vec2 b)
@@ -79,12 +88,14 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 
     vec2 centerCC = currentCursor.xy - (currentCursor.zw * offsetFactor);
     vec2 halfSizeCC = currentCursor.zw * 0.5;
-    vec2 centerCP = previousCursor.xy - (previousCursor.zw * offsetFactor);
-    vec2 halfSizeCP = previousCursor.zw * 0.5;
 
     float sdfCurrentCursor = getSdfRectangle(vu, centerCC, halfSizeCC);
 
-    float lineLength = distance(centerCC, centerCP);
+    // The trail's ends with a bar as a cell, so block to bar runs straight.
+    vec2 trailCC = currentCursor.xy - (vec2(trailWidth(currentCursor), currentCursor.w) * offsetFactor);
+    vec2 trailCP = previousCursor.xy - (vec2(trailWidth(previousCursor), previousCursor.w) * offsetFactor);
+
+    float lineLength = distance(trailCC, trailCP);
     float minDist = currentCursor.w * THRESHOLD_MIN_DISTANCE;
 
     vec4 newColor = vec4(fragColor);
@@ -99,7 +110,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
         float cc_new_top_y = cc_center_y + cc_new_half_height;
         float cc_new_bottom_y = cc_center_y - cc_new_half_height;
 
-        float cc_half_width = currentCursor.z * 0.5;
+        float cc_width = mix(trailWidth(currentCursor), currentCursor.z, smoothstep(0.0, DURATION, baseProgress));
+        float cc_half_width = cc_width * 0.5;
         float cc_center_x = currentCursor.x + cc_half_width;
         float cc_new_half_width = cc_half_width * TRAIL_THICKNESS_X;
         float cc_new_left_x = cc_center_x - cc_new_half_width;
@@ -116,7 +128,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
         float cp_new_top_y = cp_center_y + cp_new_half_height;
         float cp_new_bottom_y = cp_center_y - cp_new_half_height;
 
-        float cp_half_width = previousCursor.z * 0.5;
+        float cp_half_width = trailWidth(previousCursor) * 0.5;
         float cp_center_x = previousCursor.x + cp_half_width;
         float cp_new_half_width = cp_half_width * TRAIL_THICKNESS_X;
         float cp_new_left_x = cp_center_x - cp_new_half_width;
@@ -131,8 +143,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
         const float DURATION_LEAD = DURATION * (1.0 - TRAIL_SIZE);
         const float DURATION_SIDE = (DURATION_LEAD + DURATION_TRAIL) / 2.0;
 
-        vec2 moveVec = centerCC - centerCP;
-        vec2 s = sign(moveVec);
+        vec2 moveVec = trailCC - trailCP;
+        // Under half a cell is no move on that axis: a bar sits a bearing off its cell.
+        vec2 s = sign(moveVec) * step(vec2(trailWidth(currentCursor), currentCursor.w) * 0.5, abs(moveVec));
 
         float dot_tl = dot(vec2(-1., 1.), s);
         float dot_tr = dot(vec2( 1., 1.), s);
@@ -171,7 +184,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 
         float sdfTrail = getSdfConvexQuad(vu, v_tl, v_tr, v_br, v_bl);
 
-        vec2 fragVec = vu - centerCP;
+        vec2 fragVec = vu - trailCP;
 
         float fadeProgress = clamp(dot(fragVec, moveVec) / (dot(moveVec, moveVec) + 1e-6), 0.0, 1.0);
 
