@@ -11,7 +11,7 @@ My terminal setup for Arch Linux and macOS, linked into `~` with [GNU Stow](http
 - **Claude Code**: language servers as plugins, so edits come back with the errors: Pyrefly, TypeScript, Intelephense, Lua and on Arch QML (`claude-plugins/` holds the two the official marketplace lacks)
 - **Firefox**: privacy defaults (`firefox-apply`)
 - **Brewfile** for macOS, **packages-arch.txt** for Arch
-- **Keys**, the same on both: Caps Lock is Escape tapped and Control held; Tab held makes hjkl the arrows, and then types no Tab. On Arch kanata (`kanata.kbd`, run by FreshArchLinux); on macOS Karabiner-Elements, which brings its own driver: turn both rules on once in Complex Modifications, Add predefined rule
+- **kanata**, one `kanata.kbd` for macOS and Arch: Caps Lock is Escape tapped and Control held; Tab held makes hjkl the arrows, and then types no Tab. On Arch FreshArchLinux runs it. On macOS `install.sh` puts in kanata and the Karabiner driver it was built for (both pinned in it, raised together) and starts them at boot; once by hand, macOS asks to turn on the driver (Driver Extensions) and kanata (Input Monitoring). Left Control+Space+Escape stops kanata until the next boot
 
 ## Install
 
