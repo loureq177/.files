@@ -1,20 +1,33 @@
-;; Caps Lock: Escape tapped, Control held. Tab: Tab tapped; held, hjkl are the arrows
-;; and no Tab is typed. The same on macOS and Arch.
+;; Caps Lock: Escape tapped, Control held; held, hjkl are the arrows (Shift kept).
+;; On Linux with Alt or Super down they stay CTRL + hjkl: SUPER + CTRL resizes windows.
 (defcfg
   process-unmapped-keys yes
 )
 
-(defsrc caps tab h j k l)
+(defsrc caps h j k l)
 
 (defalias
-  cap (tap-hold-press 0 200 esc lctl)
-  ;; Any other key while Tab is down types Tab first: only hjkl take the layer early.
-  tab (tap-hold-release-keys 0 200 tab (layer-while-held arrows)
-        (q w e r t y u i o p a s d f g z x c v b n m
-         1 2 3 4 5 6 7 8 9 0 spc ret bspc tab)
-        (require-prior-idle 150))
+  cap (tap-hold-press 0 200 esc (multi lctl (layer-while-held arrows)))
 )
 
-(deflayer base @cap @tab h j k l)
+(platform (linux)
+  (defalias
+    ← (fork (unmod (lctl) left) h (lalt lmet))
+    ↓ (fork (unmod (lctl) down) j (lalt lmet))
+    ↑ (fork (unmod (lctl) up) k (lalt lmet))
+    → (fork (unmod (lctl) right) l (lalt lmet))
+  )
+)
 
-(deflayer arrows _ _ left down up right)
+(platform (macos)
+  (defalias
+    ← (unmod (lctl) left)
+    ↓ (unmod (lctl) down)
+    ↑ (unmod (lctl) up)
+    → (unmod (lctl) right)
+  )
+)
+
+(deflayer base @cap h j k l)
+
+(deflayer arrows _ @← @↓ @↑ @→)
