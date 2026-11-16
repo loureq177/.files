@@ -1,0 +1,20 @@
+;; Caps Lock: Escape tapped, Control held. Tab: Tab tapped; held, hjkl are the arrows
+;; and no Tab is typed. The same on macOS and Arch.
+(defcfg
+  process-unmapped-keys yes
+)
+
+(defsrc caps tab h j k l)
+
+(defalias
+  cap (tap-hold-press 0 200 esc lctl)
+  ;; Any other key while Tab is down types Tab first: only hjkl take the layer early.
+  tab (tap-hold-release-keys 0 200 tab (layer-while-held arrows)
+        (q w e r t y u i o p a s d f g z x c v b n m
+         1 2 3 4 5 6 7 8 9 0 spc ret bspc tab)
+        (require-prior-idle 150))
+)
+
+(deflayer base @cap @tab h j k l)
+
+(deflayer arrows _ _ left down up right)
