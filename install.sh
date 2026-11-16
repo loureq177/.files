@@ -44,10 +44,11 @@ Linux)
     ;;
 esac
 
-# macOS: kanata from its release with the Karabiner driver it was built for; raise both at once
-# (1.13 needs the driver v8). Not from brew, so no upgrade splits them; a failed start leaves the keys as they are.
+# macOS: kanata from brew, pinned, and the Karabiner driver its version needs (1.13 needs v8.0.0):
+# raise both here at once. Brew has no cask for the driver alone. A failed start leaves the keys as they are.
 KANATA_VERSION=1.12.0
 DRIVER_VERSION=6.2.0
+DRIVER_SHA256=9e8c46239f0748161241e42444857901224e5c82f5b58a1731df4c70bf0736a8
 DRIVER_ID=org.pqrs.Karabiner-DriverKit-VirtualHIDDevice
 
 _sha256_is() { [ "$(shasum -a 256 "$1" | cut -d' ' -f1)" = "$2" ] || { _log_error "Checksum mismatch: $1"; return 1; }; }
@@ -65,25 +66,27 @@ _launch_daemon() {
 }
 
 macos_kanata() {
-    local arch sum tmp bin=/usr/local/bin/kanata
-    case "$(uname -m)" in
-    arm64) arch=arm64 sum=839769d189911b5881e11550eaa2039705213fb725865d088f5a2e3a6c10de32 ;;
-    *) arch=x64 sum=bdb8b2f7ae2a648336a2561c7c6c00a736cd76e012035df651114b304c5ffb01 ;;
-    esac
-    tmp="$(mktemp -d)"
+    local tmp bin version
+    bin="$(brew --prefix)/opt/kanata/bin/kanata"
+    brew pin kanata
+    version="$("$bin" --version 2>/dev/null | awk '{ print $2 }')"
+    if [ "$version" != "$KANATA_VERSION" ]; then
+        _log_warn "brew gave kanata $version, but install.sh pairs $KANATA_VERSION with the driver $DRIVER_VERSION: kanata left off."
+        return 0
+    fi
     _log_info "kanata $KANATA_VERSION and its driver $DRIVER_VERSION..."
     # Two grabbers fight over the keyboard; Karabiner-Elements takes its own driver with it.
     if brew list --cask karabiner-elements &>/dev/null; then
         brew uninstall --cask karabiner-elements
     fi
-    if brew list --formula kanata &>/dev/null; then
-        brew unpin kanata 2>/dev/null || true
-        brew uninstall --formula kanata
-    fi
     if [ "$(pkgutil --pkg-info "$DRIVER_ID" 2>/dev/null | awk '/^version:/ { print $2 }')" != "$DRIVER_VERSION" ]; then
+        tmp="$(mktemp -d)"
         curl -fsSL -o "$tmp/driver.pkg" "https://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/releases/download/v$DRIVER_VERSION/Karabiner-DriverKit-VirtualHIDDevice-$DRIVER_VERSION.pkg"
-        _sha256_is "$tmp/driver.pkg" 9e8c46239f0748161241e42444857901224e5c82f5b58a1731df4c70bf0736a8 || return 1
+        _sha256_is "$tmp/driver.pkg" "$DRIVER_SHA256" || return 1
+        # Signed for distribution and notarized by Apple, as brew's casks are checked by Gatekeeper.
+        pkgutil --check-signature "$tmp/driver.pkg" | grep -q 'Apple notary service' || { _log_error "The driver is not notarized."; return 1; }
         sudo installer -pkg "$tmp/driver.pkg" -target / || return 1
+        rm -rf "$tmp"
     fi
     sudo /Applications/.Karabiner-VirtualHIDDevice-Manager.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Manager activate
     _launch_daemon org.pqrs.Karabiner-VirtualHIDDevice-Daemon <<'EOF'
@@ -96,15 +99,6 @@ macos_kanata() {
   <key>KeepAlive</key><true/>
 </dict></plist>
 EOF
-    if [ "$("$bin" --version 2>/dev/null | awk '{ print $2 }')" != "$KANATA_VERSION" ]; then
-        curl -fsSL -o "$tmp/kanata.zip" "https://github.com/jtroo/kanata/releases/download/v$KANATA_VERSION/macos-binaries-$arch.zip"
-        _sha256_is "$tmp/kanata.zip" "$sum" || return 1
-        unzip -q -o "$tmp/kanata.zip" "kanata_macos_$arch" -d "$tmp" || return 1
-        sudo install -d /usr/local/bin
-        sudo install -m 755 "$tmp/kanata_macos_$arch" "$bin" || return 1
-        sudo launchctl kickstart -k system/local.kanata 2>/dev/null || true
-    fi
-    rm -rf "$tmp"
     # Started again only after a crash: left Control+Space+Escape stops it until the next boot.
     _launch_daemon local.kanata <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -122,7 +116,7 @@ EOF
     if pgrep -x kanata >/dev/null; then
         _log_ok "kanata is running."
     else
-        _log_warn "kanata is not running yet. Once, by hand: turn on the driver in Login Items & Extensions, Driver Extensions, and $bin in Privacy & Security, Input Monitoring (+). It starts by itself after that."
+        _log_warn "kanata is not running yet. Once, by hand: turn on the driver in Login Items & Extensions, Driver Extensions, and $(realpath "$bin" 2>/dev/null || echo "$bin") in Privacy & Security, Input Monitoring (+). It starts by itself after that."
         systemextensionsctl list 2>/dev/null | grep -i pqrs || true
         open "x-apple.systempreferences:com.apple.LoginItems-Settings.extension" || true
         open "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent" || true
