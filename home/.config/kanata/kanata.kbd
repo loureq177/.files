@@ -4,11 +4,19 @@
   process-unmapped-keys yes
 )
 
-(defsrc caps h j k l)
+(defsrc caps h j k l play pause)
 
 (defalias
   cap (tap-hold-press 0 200 esc (multi lctl (layer-while-held arrows)))
+  ;; Taps only: the Px8 S2 USB dongle holds Play while worn and Pause once off, and a
+  ;; held bound key makes Hyprland drop the first key after a modifier combo.
+  play (macro play)
+  pause (macro pause)
 )
+
+;; KEY_PLAY has no kanata name.
+(deflocalkeys-linux play 207)
+(deflocalkeys-macos play 207)
 
 (platform (linux)
   (defalias
@@ -28,6 +36,6 @@
   )
 )
 
-(deflayer base @cap h j k l)
+(deflayer base @cap h j k l @play @pause)
 
-(deflayer arrows _ @← @↓ @↑ @→)
+(deflayer arrows _ @← @↓ @↑ @→ @play @pause)
