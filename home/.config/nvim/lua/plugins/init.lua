@@ -16,6 +16,14 @@ local function after_first_screen(name)
 	}
 end
 
+vim.api.nvim_create_autocmd("User", {
+	pattern = "VeryLazy",
+	once = true,
+	callback = function()
+		require("config.image_size").setup()
+	end,
+})
+
 return {
 	after_first_screen("lewis6991/gitsigns.nvim"),
 	after_first_screen("gbprod/yanky.nvim"),
@@ -123,8 +131,27 @@ return {
 	},
 
 	{
+		"HakonHarnes/img-clip.nvim",
+		event = "VeryLazy",
+		opts = {
+			default = {
+				dir_path = "assets",
+				relative_to_current_file = true,
+				file_name = "%Y-%m-%d-%H-%M-%S",
+				prompt_for_file_name = false,
+				use_absolute_path = false,
+				drag_and_drop = { enabled = true, insert_mode = true },
+			},
+		},
+		keys = {
+			{ "<leader>ip", "<cmd>PasteImage<CR>", desc = "Paste Image from Clipboard" },
+		},
+	},
+
+	{
 		"folke/snacks.nvim",
 		opts = {
+			image = { enabled = true },
 			terminal = { win = { wo = { winbar = "" } } },
 			explorer = { replace_netrw = true },
 			picker = {
