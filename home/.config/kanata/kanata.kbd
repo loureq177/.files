@@ -2,9 +2,11 @@
 ;; On Linux with Alt or Super down they stay CTRL + hjkl: SUPER + CTRL resizes windows.
 (defcfg
   process-unmapped-keys yes
+  ;; Its PrtSc without Fn is KEY_SELECTIVE_SCREENSHOT (634), past what kanata's device can send.
+  linux-dev-names-exclude ("Ideapad extra buttons")
 )
 
-(defsrc caps h j k l play pause)
+(defsrc caps h j k l play pause rctl)
 
 (defalias
   cap (tap-hold-press 0 200 esc (multi lctl (layer-while-held arrows)))
@@ -20,6 +22,8 @@
 
 (platform (linux)
   (defalias
+    ;; Right Control tapped alone is F20, the desktop's dictation key; held it is Control.
+    rc (tap-hold-press 0 200 f20 rctl)
     ← (fork (unmod (lctl) left) h (lalt lmet))
     ↓ (fork (unmod (lctl) down) j (lalt lmet))
     ↑ (fork (unmod (lctl) up) k (lalt lmet))
@@ -29,6 +33,7 @@
 
 (platform (macos)
   (defalias
+    rc rctl
     ← (unmod (lctl) left)
     ↓ (unmod (lctl) down)
     ↑ (unmod (lctl) up)
@@ -36,6 +41,6 @@
   )
 )
 
-(deflayer base @cap h j k l @play @pause)
+(deflayer base @cap h j k l @play @pause @rc)
 
-(deflayer arrows _ @← @↓ @↑ @→ @play @pause)
+(deflayer arrows _ @← @↓ @↑ @→ @play @pause @rc)
