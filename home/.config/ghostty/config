@@ -10,7 +10,7 @@ cursor-style-blink = false
 mouse-hide-while-typing = true
 mouse-scroll-multiplier = discrete:1,precision:1
 focus-follows-mouse = true
-# Closes at once, a running program or not.
+
 confirm-close-surface = false
 clipboard-read = allow
 clipboard-write = deny
@@ -21,13 +21,27 @@ window-padding-x = 8
 window-padding-y = 8
 window-padding-balance = true
 
+macos-option-as-alt = left
+
 keybind = ctrl+shift+v=paste_from_clipboard
 keybind = shift+insert=paste_from_clipboard
-keybind = ctrl+shift+z=undo
-# The scrollback a few lines at a time, held for more (as j / k in vim);
-# shift+page_up / page_down still go a page.
-keybind = ctrl+shift+k=scroll_page_lines:-3
-keybind = ctrl+shift+j=scroll_page_lines:3
+
+keybind = ctrl+shift+k=scroll_page_fractional:-0.5
+keybind = ctrl+shift+j=scroll_page_fractional:0.5
+
+keybind = performable:shift+left=goto_split:left
+keybind = performable:shift+down=goto_split:bottom
+keybind = performable:shift+up=goto_split:top
+keybind = performable:shift+right=goto_split:right
+
+keybind = ctrl+shift+d=new_split:right
+keybind = ctrl+shift+e=new_split:down
+
+# Ctrl+Alt, not Alt: Option+L and Option+Shift+L type ł and Ł.
+keybind = ctrl+alt+shift+h=new_split:left
+keybind = ctrl+alt+shift+j=new_split:down
+keybind = ctrl+alt+shift+k=new_split:up
+keybind = ctrl+alt+shift+l=new_split:right
 
 config-file = ?~/.local/state/ghostty/perf.conf
 # This machine's own, out of git (working-directory and the like).
