@@ -22,8 +22,9 @@
 
 (platform (linux)
   (defalias
-    ;; Right Control tapped alone is F20, the desktop's dictation key; held it is Control.
-    rc (tap-hold-press 0 200 f20 rctl)
+    ;; Right Control tapped alone is F19, the desktop's dictation key; held it is Control.
+    ;; Not F20: XKB reads that as XF86AudioMicMute.
+    rc (tap-hold-press 0 200 f19 rctl)
     ← (fork (unmod (lctl) left) h (lalt lmet))
     ↓ (fork (unmod (lctl) down) j (lalt lmet))
     ↑ (fork (unmod (lctl) up) k (lalt lmet))
