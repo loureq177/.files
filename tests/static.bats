@@ -61,6 +61,7 @@ check_each() {
 }
 
 @test "toml files parse" {
+    python3 -c 'import tomllib' 2>/dev/null || skip "needs python 3.11+ (tomllib)"
     repo_files '*.toml' | check_each python3 -c 'import sys, tomllib; tomllib.load(open(sys.argv[1], "rb"))'
 }
 
