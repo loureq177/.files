@@ -7,7 +7,6 @@ My terminal setup for Arch Linux and macOS, linked into `~` with [GNU Stow](http
 - **zsh**: zinit, fzf-tab, autosuggestions, syntax highlighting, starship, zoxide, eza
 - **Neovim**: LazyVim
 - **Ghostty**, **yazi**, **btop**, **bat**, **lazygit**, **git** with delta, all in GitHub Dark
-- **opencode**: commands and theme
 - **Claude Code**: language servers as plugins, so edits come back with the errors: Pyrefly, TypeScript, Intelephense, Lua and on Arch QML (`claude-plugins/` holds the two the official marketplace lacks)
 - **Firefox**: privacy defaults (`firefox-apply`)
 - **macOS**: pointer and scroll speeds, fast key repeat, calendar alerts that stay until closed (`macos-defaults`)
