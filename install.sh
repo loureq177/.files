@@ -51,7 +51,10 @@ DRIVER_VERSION=6.2.0
 DRIVER_SHA256=9e8c46239f0748161241e42444857901224e5c82f5b58a1731df4c70bf0736a8
 DRIVER_ID=org.pqrs.Karabiner-DriverKit-VirtualHIDDevice
 
-_sha256_is() { [ "$(shasum -a 256 "$1" | cut -d' ' -f1)" = "$2" ] || { _log_error "Checksum mismatch: $1"; return 1; }; }
+_sha256_is() { [ "$(shasum -a 256 "$1" | cut -d' ' -f1)" = "$2" ] || {
+    _log_error "Checksum mismatch: $1"
+    return 1
+}; }
 
 # LABEL, the plist on stdin: written when it differs, then loaded.
 _launch_daemon() {
@@ -97,7 +100,10 @@ macos_kanata() {
         curl -fsSL -o "$tmp/driver.pkg" "https://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/releases/download/v$DRIVER_VERSION/Karabiner-DriverKit-VirtualHIDDevice-$DRIVER_VERSION.pkg"
         _sha256_is "$tmp/driver.pkg" "$DRIVER_SHA256" || return 1
         # Signed for distribution and notarized by Apple, as brew's casks are checked by Gatekeeper.
-        pkgutil --check-signature "$tmp/driver.pkg" | grep -q 'Apple notary service' || { _log_error "The driver is not notarized."; return 1; }
+        pkgutil --check-signature "$tmp/driver.pkg" | grep -q 'Apple notary service' || {
+            _log_error "The driver is not notarized."
+            return 1
+        }
         sudo installer -pkg "$tmp/driver.pkg" -target / || return 1
         rm -rf "$tmp"
     fi
@@ -177,6 +183,14 @@ if command -v claude &>/dev/null; then
     for p in $plugins; do
         claude plugin install "$p" >/dev/null || _log_warn "Claude Code plugin $p failed to install."
     done
+    python3 - ~/.claude/settings.json <<'EOF' || _log_warn "Claude Code attribution setting failed."
+import json, os, sys
+path = sys.argv[1]
+settings = json.load(open(path)) if os.path.exists(path) else {}
+settings["attribution"] = {"commit": "", "pr": ""}
+os.makedirs(os.path.dirname(path), exist_ok=True)
+json.dump(settings, open(path, "w"), indent=2)
+EOF
 fi
 
 # zsh reads .zshenv (ZDOTDIR) only as the login shell; macOS has it already.
@@ -188,11 +202,6 @@ fi
 
 if command -v bat &>/dev/null; then
     bat cache --build >/dev/null || _log_warn "bat cache build failed."
-fi
-# A Firefox that has never run has no profile yet; on the Arch desktop the
-# session applies the defaults again at every login.
-if command -v firefox &>/dev/null || [ -d "/Applications/Firefox.app" ]; then
-    ~/.local/bin/firefox-apply || _log_warn "No Firefox profile yet: run firefox-apply after Firefox has run once."
 fi
 if [ "$(uname -s)" = Darwin ]; then
     _log_info "Applying macOS defaults..."
