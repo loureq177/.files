@@ -4,17 +4,30 @@
 ;; keys it passes on unmapped turn into plain F1-F12 instead of brightness, volume and the rest.
 (defcfg
   process-unmapped-keys yes
+  ;; Its PrtSc without Fn is KEY_SELECTIVE_SCREENSHOT (634), past what kanata's device can send.
+  linux-dev-names-exclude ("Ideapad extra buttons")
 )
 
-(defsrc caps h j k l f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12)
+(defsrc caps h j k l f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 play pause rctl)
 
 (defalias
   cap (tap-hold-press 0 200 esc (multi lctl (layer-while-held arrows)))
+  ;; Taps only: the Px8 S2 USB dongle holds Play while worn and Pause once off, and a
+  ;; held bound key makes Hyprland drop the first key after a modifier combo.
+  play (macro play)
+  pause (macro pause)
 )
+
+;; KEY_PLAY has no kanata name.
+(deflocalkeys-linux play 207)
+(deflocalkeys-macos play 207)
 
 (platform (linux)
   (defalias
     r1 f1 r2 f2 r3 f3 r4 f4 r5 f5 r6 f6 r7 f7 r8 f8 r9 f9 r10 f10 r11 f11 r12 f12
+    ;; Right Control tapped alone is F19, the desktop's dictation key; held it is Control.
+    ;; Not F20: XKB reads that as XF86AudioMicMute.
+    rc (tap-hold-press 0 200 f19 rctl)
     ← (fork (unmod (lctl) left) h (lalt lmet))
     ↓ (fork (unmod (lctl) down) j (lalt lmet))
     ↑ (fork (unmod (lctl) up) k (lalt lmet))
@@ -25,6 +38,7 @@
 (platform (macos)
   (defalias
     r1 brdn r2 brup r3 mctl r4 sls r5 dtn r6 dnd r7 prev r8 pp r9 next r10 mute r11 vold r12 volu
+    rc rctl
     ← (unmod (lctl) left)
     ↓ (unmod (lctl) down)
     ↑ (unmod (lctl) up)
@@ -32,6 +46,6 @@
   )
 )
 
-(deflayer base @cap h j k l @r1 @r2 @r3 @r4 @r5 @r6 @r7 @r8 @r9 @r10 @r11 @r12)
+(deflayer base @cap h j k l @r1 @r2 @r3 @r4 @r5 @r6 @r7 @r8 @r9 @r10 @r11 @r12 @play @pause @rc)
 
-(deflayer arrows _ @← @↓ @↑ @→ _ _ _ _ _ _ _ _ _ _ _ _)
+(deflayer arrows _ @← @↓ @↑ @→ _ _ _ _ _ _ _ _ _ _ _ _ @play @pause @rc)
