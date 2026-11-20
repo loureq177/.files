@@ -34,6 +34,11 @@ keybind = performable:shift+down=goto_split:bottom
 keybind = performable:shift+up=goto_split:top
 keybind = performable:shift+right=goto_split:right
 
+# The same on macOS and Linux (cmd+t and the rest stay on macOS besides).
+keybind = ctrl+shift+t=new_tab
+keybind = ctrl+shift+w=close_surface
+keybind = ctrl+shift+n=new_window
+
 keybind = ctrl+shift+d=new_split:right
 keybind = ctrl+shift+e=new_split:down
 
