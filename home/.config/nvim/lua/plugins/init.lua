@@ -45,6 +45,45 @@ return {
 	{ "folke/flash.nvim", enabled = false },
 
 	{
+		"sindrets/diffview.nvim",
+		cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose", "DiffviewRefresh" },
+		keys = {
+			{ "<leader>gv", "<cmd>DiffviewOpen<CR>", desc = "Diffview (Working Tree)" },
+			{ "<leader>gV", "<cmd>DiffviewFileHistory<CR>", desc = "Diffview (Repo History)" },
+		},
+		opts = function()
+			local close = { "n", "q", "<cmd>DiffviewClose<CR>", { desc = "Close Diffview" } }
+			return {
+				-- Lines only the old side has are red there, not green as "added".
+				enhanced_diff_hl = true,
+				keymaps = {
+					view = { close },
+					file_panel = { close },
+					file_history_panel = { close },
+				},
+			}
+		end,
+		config = function(_, opts)
+			require("diffview").setup(opts)
+
+			-- The theme gives the diff groups a foreground, which paints a changed line one colour
+			-- over its syntax. Backgrounds only, as in VSCode: the code keeps its highlighting.
+			local function diff_highlights()
+				local function bg(group)
+					return vim.api.nvim_get_hl(0, { name = group, link = false }).bg
+				end
+				for _, group in ipairs({ "DiffAdd", "DiffChange" }) do
+					vim.api.nvim_set_hl(0, group, { bg = bg(group) })
+				end
+				vim.api.nvim_set_hl(0, "DiffText", { bg = "#4a3f1a" })
+				vim.api.nvim_set_hl(0, "DiffviewDiffAddAsDelete", { bg = bg("DiffDelete") })
+			end
+			diff_highlights()
+			vim.api.nvim_create_autocmd("ColorScheme", { callback = diff_highlights })
+		end,
+	},
+
+	{
 		"stevearc/aerial.nvim",
 		opts = {
 			on_attach = function(bufnr)
