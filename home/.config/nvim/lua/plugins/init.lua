@@ -144,7 +144,10 @@ return {
 					if vim.g.did_very_lazy then
 						load()
 					else
-						vim.api.nvim_create_autocmd("User", { pattern = "VeryLazy", once = true, callback = load })
+						vim.api.nvim_create_autocmd(
+							"User",
+							{ pattern = "VeryLazy", once = true, callback = load }
+						)
 					end
 				end,
 			})
@@ -198,7 +201,7 @@ return {
 				ignored = false,
 				sources = {
 					explorer = {
-						layout = { layout = { position = "right", width = 30 } },
+						layout = { layout = { width = 30 } },
 					},
 					files = {
 						hidden = true,
